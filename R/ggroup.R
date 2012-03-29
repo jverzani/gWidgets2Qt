@@ -112,7 +112,7 @@ GBoxContainer <- setRefClass("GBoxContainer",
                                  expand <- as.logical(expand)
                                  
                                  fill <- create_fill(fill)
-
+                                 
                                  if(is.null(anchor)) {
                                    set_size_policy(qt_child, fill)
                                    widget$addWidget(qt_child, stretch)
@@ -149,9 +149,9 @@ GGroup <- setRefClass("GGroup",
 
                           horizontal <<- horizontal
                           if(use.scrollwindow) {
-                            block <<- make_scroll_widget(horizontal, ...)
+                            block <<- make_scroll_widget(horizontal)
                           } else {
-                            make_widget(horizontal,  ...)
+                            make_widget(horizontal)
                             block <<- Qt$QWidget()
                             block$setLayout(widget)
                           }
