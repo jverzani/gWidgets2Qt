@@ -7,6 +7,7 @@ Author: Who wrote it
 Depends:
     methods,
     qtbase,
+    qtutils,
     gWidgets2
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: More about what it does (maybe more than one
@@ -36,3 +37,13 @@ Collate:
     'gcheckboxgroup.R'
     'gradio.R'
     'gslider.R'
+    'gspinbutton.R'
+    'gstatusbar.R'
+    'gseparator.R'
+    'gedit.R'
+    'gaction.R'
+    'dialogs.R'
+    'gfile.R'
+    'ggraphics.R'
+    'gcalendar.R'
+    'gtimer.R'

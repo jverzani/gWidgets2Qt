@@ -186,7 +186,7 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                         }
                                         event_decorator(f)
                                       },
-                                      ## code for integrating observable interface with RGtk2
+                                      ## code for integrating observable interface with Qt
                                       handler_widget = function() widget, # allow override for block (e.g., glabel)
                                       is_handler=function(handler) {
                                         "Helper to see if handler is a handler"
@@ -281,9 +281,6 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                         }
                                       },
                                       ## Defind add_handler_EVENT methods
-                                      ## basically passes down to add_handler or add_event_handler as needed
-                                      ## by the RGtk2 event we bind the handler to.
-                                      ## we have to check is handler is missing or a function when we apply a decorator
                                       add_handler_keystroke=function(handler, action=NULL, ...) {
                                         "Keystroke handler. Defined for all, but might restrict to only gedit, gtext"
                                         add_handler("key-release-event", handler, action, .self$key_release_decorator, ...)
@@ -303,6 +300,7 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                       ## XXX add stibs for others
                                       ##
                                       add_popup_menu = function(menulist, action=NULL, ...) {
+                                        ## XXX need to do for Qt
                                         if(is(menulist, "list")) 
                                           mb <- gmenu(menulist, popup=TRUE)
                                         else
