@@ -15,8 +15,6 @@ GWidget <- setRefClass("GWidget",
 ##' not C++ code These are used as follows: a) use
 ##' \code{createGQWClass} to create the class b) instantiate c) call
 ##' setObject to set reference class container.
-##' @cname QWidget instance
-##' @constructor function to pass to constructor in \code{qsetClass}
 createGQWClass <- function(cname, constructor) {
   where <- parent.frame()               # what environment to define class
 
