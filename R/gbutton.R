@@ -11,11 +11,11 @@ NULL
   if(is(action, "GAction"))
     GButtonAction$new(toolkit, action, container, ...)
   else
-    GButton$new(toolkit, text, handler, action, container, ...)
+    GButtonBase$new(toolkit, text, handler, action, container, ...)
 }
 
 ##' Button reference class
-GButtonBase <- setRefClass("GButtonBase",
+GButton <- setRefClass("GButton",
                             contains="GWidget",
                             fields=list(
                               other = "ANY"
@@ -27,12 +27,14 @@ GButtonBase <- setRefClass("GButtonBase",
                                 widget$setText(value)
 
                                 ## XXX Fill in when icons.R is ready
-                                return()
-                                icon <- getStockIconFromName(tolower(value))
-                                if(!is.null(icon))
-                                  widget$setIcon(icon)
-                                else
-                                  widget$setIcon(Qt$QIcon())
+                                icon <- getStockIconByName(tolower(value))
+                                widget$setIcon(Qt$QIcon())                                
+                                if(!is.null(icon)) {
+                                  if(is(icon, "QIcon"))
+                                    widget$setIcon(icon)
+                                  else if(is(icon, "QtEnum"))
+                                    widget$setIcon(Qt$QApplication$style()$standardIcon(icon))
+                                }
                               },
                               get_value=function(index=TRUE, drop=TRUE, ...) {
                                 widget$text
@@ -42,8 +44,8 @@ GButtonBase <- setRefClass("GButtonBase",
                               }
                               ))
 
-GButton <- setRefClass("GButton",
-                       contains="GButtonBase",
+GButtonBase <- setRefClass("GButtonBase",
+                       contains="GButton",
                        methods=list(
                          
                          initialize=function(toolkit, text, handler, action, container, ...) {
@@ -63,7 +65,7 @@ GButton <- setRefClass("GButton",
                          ))
                          
 GButtonAction <- setRefClass("GButtonAction",
-                             contains="GButtonBase",
+                             contains="GButton",
                              methods=list(
                                initialize=function(toolkit,  action, container, ...) {
                                  widget <<- Qt$QPushButton()
@@ -79,10 +81,10 @@ GButtonAction <- setRefClass("GButtonAction",
                                  set_value(a$text)
 
                                  qconnect(widget,"clicked", function() a$trigger())
-                                 qconnect(a, "changed", function(obj) {
-                                   svalue(obj) <- a$text
-                                   enabled(obj) <- a$enabled
-                                 }, user.data=widget)
+                                 qconnect(a, "changed", function() {
+                                   set_value(a$text)
+                                   set_enabled(a$enabled)
+                                 })
 
                                  callSuper(...)
                                }
