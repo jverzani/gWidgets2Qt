@@ -21,37 +21,37 @@ DONE gformlayout.R
 
 
 ## Dialogs
- dialogs.R 
+DONE  dialogs.R 
 
 ## widgets
- gaction.R
+DONE  gaction.R
 DONE gbutton.R
- gcalendar.R
+DONE  gcalendar.R
 gcheckbox.R (TOGGLE BUTTON)
 DONE gcheckboxgroup.R
  gcombobox.R
- gdf.R: needs rownames
+ gdf.R
 gdfnotebook.R
- gedit.R:validation
- gfile.R
+DONE gedit.R:validation
+DONE gfile.R
 ghtml.R
-ggraphics.R
+DONE ggraphics.R
  gimage.R
 DONE  glabel.R
  gmenu.R
 DONE  gradio.R
- gseparator.R
- gslider.R
- gspinbutton.R
- gstatusbar.R
+DONE gseparator.R
+DONE gslider.R
+DONE  gspinbutton.R
+DONE  gstatusbar.R
  gtable.R
  gtext.R
- gtimer.R
+DONE  gtimer.R
  gtoolbar.R
  gtree.R: 
 gvarbrowser.R
  gwindow.R: 
- icons.R
+DONE  icons.R
 misc.R
 notebook-widgets.R
 
