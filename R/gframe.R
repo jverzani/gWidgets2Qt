@@ -33,12 +33,12 @@ GFrame <- setRefClass("GFrame",
                           
                           
                           if(use.scrollwindow) {
-                            sw <- make_scroll_widget(horizontal, ...)
+                            sw <- make_scroll_widget(horizontal)
                             lyt <- Qt$QHBoxLayout()
                             lyt$addWidget(sw)
                             block$setLayout(lyt)
                           } else {
-                            make_widget(horizontal, ...)
+                            make_widget(horizontal)
                             block$setLayout(widget)
                           }
                           set_value(spacing)
