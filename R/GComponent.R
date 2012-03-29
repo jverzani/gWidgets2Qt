@@ -55,6 +55,17 @@ GComponent <- setRefClass("GComponent",
                                  set_font = function(value) {
                                    message("XXX")
                                  },
+                                 ## size, size<-
+                                 get_size=function() {
+                                   "Returns size hint. (Is there a better choice?"
+                                   sz <- widget$sizeHint()
+                                   c(width=sz$width(), height=sz$height())
+                                 },
+                                 set_size=function(value) {
+                                   ## value is possibly list
+                                   value <- unlist(value)
+                                   widget$sizeHint(qsize(as.integer(value)))
+                                 },
                                  ## tag
                                  get_attr = function(key) {
                                    if(missing(key))
