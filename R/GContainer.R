@@ -30,10 +30,10 @@ GContainer <- setRefClass("GContainer",
                             set_size_policy=function(child, fill) {
                               "If fill is non NULL, set the size policy based on its value"
                               if(!is.null(set_child_fill(fill))) {
-                                if(fill == "x")
+                                if(fill == "y")
                                   child$setSizePolicy(Qt$QSizePolicy$Fixed, # Preferred? MinimumExpanding?
                                                       Qt$QSizePolicy$Expanding)
-                                else if(fill == "y")
+                                else if(fill == "x")
                                   child$setSizePolicy(Qt$QSizePolicy$Expanding,
                                                       Qt$QSizePolicy$Fixed)
                                 else                  # default is fill = "both" when no anchor, but expand
