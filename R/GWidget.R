@@ -3,6 +3,9 @@ NULL
 
 ##' Base class for widget objects.
 GWidget <- setRefClass("GWidget",
+                       fields=list(
+                         coerce_with="ANY"
+                         ),
                        contains="GComponentObservable"
 
                        )
