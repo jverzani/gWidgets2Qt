@@ -29,7 +29,7 @@ DONE gbutton.R
 DONE  gcalendar.R
 gcheckbox.R (TOGGLE BUTTON)
 DONE gcheckboxgroup.R
- gcombobox.R
+DONE gcombobox.R
  gdf.R
 gdfnotebook.R
 DONE gedit.R:validation

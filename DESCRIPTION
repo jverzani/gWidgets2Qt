@@ -47,3 +47,4 @@ Collate:
     'ggraphics.R'
     'gcalendar.R'
     'gtimer.R'
+    'gcombobox.R'

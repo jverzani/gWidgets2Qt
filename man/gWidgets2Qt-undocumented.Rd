@@ -7,6 +7,7 @@
 \alias{.gcalendar.guiWidgetsToolkitQt}
 \alias{.gcheckbox.guiWidgetsToolkitQt}
 \alias{.gcheckboxgroup.guiWidgetsToolkitQt}
+\alias{.gcombobox.guiWidgetsToolkitQt}
 \alias{.gconfirm.guiWidgetsToolkitQt}
 \alias{.gedit.guiWidgetsToolkitQt}
 \alias{.getStockIconByName.guiWidgetsToolkitQt}
@@ -159,6 +160,10 @@
 
   \method{.gtimer}{guiWidgetsToolkitQt} (toolkit, ms, FUN,
     data = NULL, one.shot = FALSE, start = TRUE)
+
+  \method{.gcombobox}{guiWidgetsToolkitQt} (toolkit, items,
+    selected = 1, editable = FALSE, coerce.with = NULL,
+    handler = NULL, action = NULL, container = NULL, ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -308,6 +313,10 @@
   \item{start}{logical. If FALSE, started by
   \code{start_timer} OO method. (Call
   \code{obj$start_time()}).}
+
+  \item{coerce.with}{A function of function name to be
+  called before selected value is returned by
+  \code{svalue}}
 }
 \value{
   NULL
@@ -378,5 +387,7 @@
   Toolkit constructor
 
   S3 method for gtimer
+
+  Toolkit constructor
 }
 
