@@ -58,13 +58,13 @@ GComponent <- setRefClass("GComponent",
                                  ## size, size<-
                                  get_size=function() {
                                    "Returns size hint. (Is there a better choice?"
-                                   sz <- widget$sizeHint()
-                                   c(width=sz$width(), height=sz$height())
+                                   c(width=block$width, height=block$height)
                                  },
                                  set_size=function(value) {
-                                   ## value is possibly list
+                                   ## value is possibly a list
                                    value <- unlist(value)
-                                   widget$sizeHint(qsize(as.integer(value)))
+                                   value <- rep(value, length=2) # recycle if need be
+                                   block$setMaximumSize(qsize(as.integer(value)))
                                  },
                                  ## tag
                                  get_attr = function(key) {
@@ -88,6 +88,11 @@ GComponent <- setRefClass("GComponent",
                                      return()
                                    }
                                    parent$add_child(child, expand, fill, anchor, ...)
+                                 },
+                                 ## Qt functions
+                                 get_allocation=function() {
+                                   "Return allocation (width x height) of widget"
+                                   c(width=widget$width, height=widget$height)
                                  }
                                  ## ## Qt handler code
                                  ## handler_widget = function() widget, # allow override for block (glabel)
@@ -231,7 +236,7 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                         
                                         ## only connect once
                                         if(is.null(connected_signals[[signal, exact=TRUE]]))
-                                          qconnect(handler_widget(), signal, handler=f, user.data=.self)
+                                          qconnect(emitter, signal, handler=f, user.data=.self)
                                         connected_signals[[signal]] <<- TRUE
                                       },
                                       ## initiate a handler (emit signal)
