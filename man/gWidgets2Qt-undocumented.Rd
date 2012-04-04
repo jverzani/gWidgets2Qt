@@ -18,6 +18,8 @@
 \alias{.gformlayout.guiWidgetsToolkitQt}
 \alias{.gframe.guiWidgetsToolkitQt}
 \alias{.ggraphics.guiWidgetsToolkitQt}
+\alias{.ghtml.guiWidgetsToolkitQt}
+\alias{.gimage.guiWidgetsToolkitQt}
 \alias{.ginput.guiWidgetsToolkitQt}
 \alias{.glabel.guiWidgetsToolkitQt}
 \alias{.glayout.guiWidgetsToolkitQt}
@@ -30,6 +32,7 @@
 \alias{.gspinbutton.guiWidgetsToolkitQt}
 \alias{.gstackwidget.guiWidgetsToolkitQt}
 \alias{.gstatusbar.guiWidgetsToolkitQt}
+\alias{.gtable.guiWidgetsToolkitQt}
 \alias{.gtimer.guiWidgetsToolkitQt}
 \alias{.stockIconFromObject.guiWidgetsToolkitQt}
 \alias{addToStockIcons}
@@ -164,6 +167,18 @@
   \method{.gcombobox}{guiWidgetsToolkitQt} (toolkit, items,
     selected = 1, editable = FALSE, coerce.with = NULL,
     handler = NULL, action = NULL, container = NULL, ...)
+
+  \method{.gimage}{guiWidgetsToolkitQt} (toolkit,
+    filename = "", dirname = "", stock.id = NULL,
+    size = "", handler = NULL, action = NULL,
+    container = NULL, ...)
+
+  .ghtml.guiWidgetsToolkitQt(toolkit, x, container, ...)
+
+  \method{.gtable}{guiWidgetsToolkitQt} (toolkit, items,
+    multiple = FALSE, chosen.col = 1, icon.col = NULL,
+    tooltip.col = NULL, handler = NULL, action = NULL,
+    container = NULL, ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -233,7 +248,8 @@
   left, 3 top, 4 right. (If supported)}
 
   \item{align}{alignment of label. Left justify or center
-  balance.}
+  balance. Leave as "default" for underlying toolkit
+  default.}
 
   \item{checked}{is button selected}
 
@@ -317,6 +333,26 @@
   \item{coerce.with}{A function of function name to be
   called before selected value is returned by
   \code{svalue}}
+
+  \item{filename}{basename of file}
+
+  \item{dirname}{dirname of file}
+
+  \item{stock.id}{stock id of icon (if non NULL)}
+
+  \item{size}{size of icon when a stock id (toolkit
+  dependent)}
+
+  \item{multiple}{logical allow multiple selectino}
+
+  \item{chosen.col}{which value from the row is returned by
+  selection}
+
+  \item{icon.col}{NULL or integer. If latter, specifies
+  column containing stock icon}
+
+  \item{tooltip.col}{NULL or integer. If latter, specifies
+  column containing tooltip}
 }
 \value{
   NULL
@@ -324,7 +360,8 @@
 \description{
   add stock icons
 
-  Returns list of stock ids
+  Returns list of icons. Names are stock ids; value is
+  related to an icon (an icon or name...)
 
   return stock id
 
@@ -387,6 +424,12 @@
   Toolkit constructor
 
   S3 method for gtimer
+
+  Toolkit constructor
+
+  Toolkit constructor
+
+  Toolkit button constructor
 
   Toolkit constructor
 }
