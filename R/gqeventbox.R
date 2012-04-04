@@ -14,11 +14,10 @@ qsetMethod("setObject", GQEventBox, function(value) this$object <- value)
 
 qsetMethod("mousePressEvent", GQEventBox, function(e) {
   ## Do we do things differently based on the button? e$button() is an enum
-
   ## might give error?
   obj <- this$object
   if(!is.null(obj))
-    obj$notify_observers(signal="mouse-press-event")
+    obj$notify_observers(signal="mouse-press-event", x=e$x(), y = e$y())
   else
     warning("Object is null. DId you call setObject with a reference class instance?")
     
