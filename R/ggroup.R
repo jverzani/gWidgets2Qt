@@ -134,6 +134,12 @@ GBoxContainer <- setRefClass("GBoxContainer",
                                  out[[1]]
                                else
                                  out
+                               },
+                               add_space=function(value) {
+                                 widget$addSpacing(as.integer(value))
+                               },
+                               add_spring=function() {
+                                 widget$addStretch(100L)
                                }
                                ))
 
