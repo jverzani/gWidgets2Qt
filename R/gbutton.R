@@ -28,13 +28,16 @@ GButton <- setRefClass("GButton",
 
                                 ## XXX Fill in when icons.R is ready
                                 icon <- getStockIconByName(tolower(value))
-                                widget$setIcon(Qt$QIcon())                                
-                                if(!is.null(icon)) {
-                                  if(is(icon, "QIcon"))
-                                    widget$setIcon(icon)
-                                  else if(is(icon, "QtEnum"))
-                                    widget$setIcon(Qt$QApplication$style()$standardIcon(icon))
-                                }
+                                icon <- as_qicon(icon)
+                                if(!is.null(icon))
+                                  widget$setIcon(icon)
+                                ## widget$setIcon(Qt$QIcon())                                
+                                ## if(!is.null(icon)) {
+                                ##   if(is(icon, "QIcon"))
+                                ##     widget$setIcon(icon)
+                                ##   else if(is(icon, "QtEnum"))
+                                ##     widget$setIcon(Qt$QApplication$style()$standardIcon(icon))
+                                ## }
                               },
                               get_value=function(index=TRUE, drop=TRUE, ...) {
                                 widget$text
