@@ -1,4 +1,4 @@
-##' @include misc.R
+##' @include GComponent.R
 NULL
 
 
@@ -11,19 +11,34 @@ NULL
 ##' @method .addStockIcons guiWidgetsToolkitQt
 ##' @S3method .addStockIcons guiWidgetsToolkitQt
 .addStockIcons.guiWidgetsToolkitQt <- function(toolkit, iconNames, iconFiles,... ) {
-  .GWidgetsQtIcons$add_to_gtk_stock_icons(iconNames, iconFiles)
+  .GWidgetsQtIcons$add_qt_stock_icons(iconNames, iconFiles)
 }
 
-##' Returns list of stock ids
+##' Returns list of icons. Names are stock ids; value is related to an icon (an icon or name...)
 ##'
 ##' @export
 ##' @rdname gWidgets2Qt-undocumented
 ##' @method .getStockIcons guiWidgetsToolkitQt
 ##' @S3method .getStockIcons guiWidgetsToolkitQt
 .getStockIcons.guiWidgetsToolkitQt <- function(toolkit, ...) {
-  lst <- .GWidgetsQtIcons$icons
-  as.list(lst)
+  .GWidgetsQtIcons$icons
 }
+
+##' return a QIcon object from icon
+##'
+##' @param icon can be QIcon object, filename or an enumerated icon
+##' @return a QIcon instance or NULL if icon does not map to one
+as_qicon <- function(icon) {
+  if(is(icon, "QIcon"))
+    return(icon)
+  if(is.character(icon) && file.exists(icon))
+    return(Qt$QIcon(icon))
+  if(is(icon, "QtEnum"))
+    return(Qt$QApplication$style()$standardIcon(icon))
+  return(NULL)
+}
+    
+
 
 ##' return stock id
 ##'
@@ -141,7 +156,7 @@ qt_stock_icons <- list(
                                         if(is(icon, "QIcon")) {
                                           icons[[name]] <<- icon
                                         } else if(is.character(icon) && file.exists(icon)) {
-                                          icons[[name]] <<- Qt$QIcon(icon)
+                                          icons[[name]] <<- icon ## Qt$QIcon(icon)
                                         } else {
                                           icons[[name]] <<- icon
                                         }
