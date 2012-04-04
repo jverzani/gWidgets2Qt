@@ -48,3 +48,6 @@ Collate:
     'gcalendar.R'
     'gtimer.R'
     'gcombobox.R'
+    'gimage.R'
+    'ghtml.R'
+    'gtable.R'

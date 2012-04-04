@@ -34,9 +34,9 @@ DONE gcombobox.R
 gdfnotebook.R
 DONE gedit.R:validation
 DONE gfile.R
-ghtml.R
+DONE ghtml.R
 DONE ggraphics.R
- gimage.R
+DONE gimage.R
 DONE  glabel.R
  gmenu.R
 DONE  gradio.R
@@ -44,7 +44,8 @@ DONE gseparator.R
 DONE gslider.R
 DONE  gspinbutton.R
 DONE  gstatusbar.R
- gtable.R
+gsvg.R
+ gtable.R (set_names)
  gtext.R
 DONE  gtimer.R
  gtoolbar.R
