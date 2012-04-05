@@ -1,6 +1,8 @@
 ##' @include GWidget.R
 NULL
 
+## TODO: set_names; sorting on header click?; regexp_filter?
+
 ##' Toolkit constructor
 ##'
 ##' @inheritParams gWidgets2::gtable
@@ -36,6 +38,8 @@ GTable <- setRefClass("GTable",
                       contains="GWidget",
                       fields=list(
                         items="ANY",
+                        proxy_model="ANY",
+                        q_model="ANY",
                         chosen_col="integer",
                         icon_col="IntegerOrNULL",
                         tooltip_col="IntegerOrNULL"
@@ -104,7 +108,8 @@ GTable <- setRefClass("GTable",
                               },
                         get_model=function() {
                           "Helper. Get DataFrameModel from proxy"
-                          widget$model()$sourceModel()
+                          ## widget$model()$sourceModel() ## this was for proxy, but remove in due course
+                          widget$model()
                         },
                         get_value=function(drop=TRUE, ...) {
                           idx <- get_index()
@@ -152,14 +157,22 @@ GTable <- setRefClass("GTable",
                           get_dim()[2]
                         },
                         get_dim=function(...) {
-                          base:::dim(get_items(drop=FALSE))
+                          values <- get_items(drop=FALSE)
+                          base:::dim(values)
                         },
                         get_visible=function() {
+                          print(1)
+                          print(widget$model())
                           m <- get_dim()[1]
-                          if(m >= 1)
+                          print(2)
+                          print(widget$model())
+                          if(m >= 1) {
+                            print(3)
+                            print(widget$model())
                             !sapply(seq_len(m) - 1L, widget$isRowHidden)
-                          else
+                          } else {
                             logical(0)
+                          }
                         },
                         set_visible=function(value, ...) {
                           m <- get_dim()[1]
@@ -201,11 +214,12 @@ GTable <- setRefClass("GTable",
                           ## ignore i, j for now
                           if(missing(i) && missing(j)) {
                             l <- extract_pieces(value)
-                            model <- qdataFrameModel(l$items, useRoles=TRUE)
-                            ## we use a proxy model here in case we want to implement sorting or filtering later on
-                            proxy_model <- Qt$QSortFilterProxyModel()
-                            proxy_model$setSourceModel(model)
-                            widget$setModel(proxy_model)
+                            q_model <<- qdataFrameModel(l$items, useRoles=TRUE)
+#                            proxy_model <<- Qt$QSortFilterProxyModel()
+#                            proxy_model$setSourceModel(q_model)
+#                            widget$setModel(proxy_model)
+                            widget$setModel(q_model)
+                            q_model$setParent(widget) # avoids GC
                             set_icons(l$icons)
                             set_tooltips(l$tooltip)
                           }
