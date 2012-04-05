@@ -51,3 +51,4 @@ Collate:
     'gimage.R'
     'ghtml.R'
     'gtable.R'
+    'gtoolbar.R'

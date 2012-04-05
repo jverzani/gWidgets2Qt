@@ -33,7 +33,7 @@ DONE gcombobox.R
  gdf.R
 gdfnotebook.R
 DONE gedit.R:validation
-DONE gfile.R
+rstuDONE gfile.R
 DONE ghtml.R
 DONE ggraphics.R
 DONE gimage.R
@@ -45,10 +45,10 @@ DONE gslider.R
 DONE  gspinbutton.R
 DONE  gstatusbar.R
 gsvg.R
- gtable.R (set_names)
+ gtable.R (set_names, sort? Issue with model -- asked Michael,...)
  gtext.R
 DONE  gtimer.R
- gtoolbar.R
+DONE  gtoolbar.R
  gtree.R: 
 gvarbrowser.R
  gwindow.R: 

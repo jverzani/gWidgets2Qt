@@ -34,6 +34,7 @@
 \alias{.gstatusbar.guiWidgetsToolkitQt}
 \alias{.gtable.guiWidgetsToolkitQt}
 \alias{.gtimer.guiWidgetsToolkitQt}
+\alias{.gtoolbar.guiWidgetsToolkitQt}
 \alias{.stockIconFromObject.guiWidgetsToolkitQt}
 \alias{addToStockIcons}
 \title{add stock icons}
@@ -178,6 +179,11 @@
   \method{.gtable}{guiWidgetsToolkitQt} (toolkit, items,
     multiple = FALSE, chosen.col = 1, icon.col = NULL,
     tooltip.col = NULL, handler = NULL, action = NULL,
+    container = NULL, ...)
+
+  \method{.gtoolbar}{guiWidgetsToolkitQt} (toolkit,
+    toolbar.list = list(),
+    style = c("both", "icons", "text", "both-horiz"),
     container = NULL, ...)
 }
 \arguments{
@@ -353,6 +359,14 @@
 
   \item{tooltip.col}{NULL or integer. If latter, specifies
   column containing tooltip}
+
+  \item{toolbar.list}{list. A one-level list of
+  \code{gaction} items, \code{gseparator} items or possibly
+  other widgets. In the latter cases the \code{container}
+  argument is not specified prior. (XXX Need to work this
+  out with gWidgetstcltk)}
+
+  \item{style}{style for icon or text.}
 }
 \value{
   NULL
@@ -430,6 +444,8 @@
   Toolkit constructor
 
   Toolkit button constructor
+
+  Toolkit constructor
 
   Toolkit constructor
 }
