@@ -205,7 +205,7 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                       ## calls the notify observer
                                       ## method when the widget
                                       ## actualy emits the signal
-                                      add_handler=function(signal, handler, action=NULL, decorator, emitter) {
+                                      add_handler=function(signal, handler, action=NULL, decorator, emitter=.self$handler_widget()) {
                                         "Uses Observable framework for events. Adds observer, then call connect signal method. Override last if done elsewhere"
                                         if(is_handler(handler)) {
                                           o <- gWidgets2:::observer(.self, handler, action)
