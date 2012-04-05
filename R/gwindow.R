@@ -77,9 +77,18 @@ GWindow <- setRefClass("GWindow",
                               add_child=function(child, ...) {
                                 if(missing(child) || is.null(child))
                                   return()
-                                widget$setCentralWidget(getBlock(child))
-                                child$set_parent(.self)
-                                children <<- list(child)
+
+                                if(is(child, "GStatusBar")) {
+                                  add_statusbar(child)
+                                } else if(is(child, "GMenuBar")) {
+                                  add_menubar(child)
+                                } else if(is(child, "GToolBar")) {
+                                  add_toolbar(child)
+                                } else {
+                                  widget$setCentralWidget(getBlock(child))
+                                  child$set_parent(.self)
+                                  children <<- list(child)
+                                }
                               },
                               remove_child=function(child) {
                                 child$set_parent(NULL)
@@ -87,7 +96,7 @@ GWindow <- setRefClass("GWindow",
                                 children <<- list()
                               },
                               add_menubar=function(child, ...) {
-                                widget$setToolBar(getBlock(child))
+                                widget$setMenuBar(getBlock(child))
                               },
                               add_toolbar=function(child, ...) {
                                 widget$addToolBar(getBlock(child))
