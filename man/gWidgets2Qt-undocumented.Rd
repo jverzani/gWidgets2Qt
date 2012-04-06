@@ -23,6 +23,7 @@
 \alias{.ginput.guiWidgetsToolkitQt}
 \alias{.glabel.guiWidgetsToolkitQt}
 \alias{.glayout.guiWidgetsToolkitQt}
+\alias{.gmenu.guiWidgetsToolkitQt}
 \alias{.gmessage.guiWidgetsToolkitQt}
 \alias{.gnotebook.guiWidgetsToolkitQt}
 \alias{.gpanedgroup.guiWidgetsToolkitQt}
@@ -86,7 +87,8 @@
 
   \method{.gcheckbox}{guiWidgetsToolkitQt} (toolkit, text,
     checked = FALSE, use.togglebutton = FALSE,
-    handler = NULL, action = NULL, container = NULL, ...)
+    handler = NULL, action = NULL, container = NULL, ...,
+    parent = NULL)
 
   \method{.gcheckboxgroup}{guiWidgetsToolkitQt}
     (toolkit = NULL, items, checked = FALSE,
@@ -95,7 +97,7 @@
 
   \method{.gradio}{guiWidgetsToolkitQt} (toolkit, items,
     selected = 1, horizontal = FALSE, handler = NULL,
-    action = NULL, container = NULL, ...)
+    action = NULL, container = NULL, ..., parent = NULL)
 
   \method{.gslider}{guiWidgetsToolkitQt} (toolkit,
     from = 0, to = 100, by = 1, value = from,
@@ -185,6 +187,10 @@
     toolbar.list = list(),
     style = c("both", "icons", "text", "both-horiz"),
     container = NULL, ...)
+
+  \method{.gmenu}{guiWidgetsToolkitQt} (toolkit,
+    menu.list = list(), popup = FALSE, container = NULL,
+    ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -284,6 +290,9 @@
   \item{editable}{If TRUE, then clicking on label will
   enable editing of value}
 
+  \item{parent}{parent window. Needed if keyboard
+  accelerator used.}
+
   \item{label}{label for action}
 
   \item{tooltip}{toolktip for actin}
@@ -292,9 +301,6 @@
 
   \item{key.accel}{keyboard accelerator. If given, parent
   must be specified.}
-
-  \item{parent}{parent window. Needed if keyboard
-  accelerator used.}
 
   \item{msg}{Character. Message to display.}
 
@@ -367,6 +373,17 @@
   out with gWidgetstcltk)}
 
   \item{style}{style for icon or text.}
+
+  \item{menu.list}{A list defining the menu structure.
+  Named sub lists determine the submenu titles and
+  structure. The list may have components of class:
+  \code{GAction}, mapped to a button; \code{GSeparator},
+  mapped to a horizontal separator; \code{GRadio}, mapped
+  to linked buttons; or \code{GCheckbox}, mapped to a
+  checkbox button.}
+
+  \item{popup}{logical. If true, make a popup window to be
+  added through a handler call}
 }
 \value{
   NULL
@@ -444,6 +461,8 @@
   Toolkit constructor
 
   Toolkit button constructor
+
+  Toolkit constructor
 
   Toolkit constructor
 

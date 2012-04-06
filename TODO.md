@@ -33,12 +33,12 @@ DONE gcombobox.R
  gdf.R
 gdfnotebook.R
 DONE gedit.R:validation
-rstuDONE gfile.R
+DONE gfile.R
 DONE ghtml.R
 DONE ggraphics.R
 DONE gimage.R
 DONE  glabel.R
- gmenu.R
+DONE  gmenu.R
 DONE  gradio.R
 DONE gseparator.R
 DONE gslider.R

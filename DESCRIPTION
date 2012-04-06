@@ -52,3 +52,4 @@ Collate:
     'ghtml.R'
     'gtable.R'
     'gtoolbar.R'
+    'gmenu.R'
