@@ -10,17 +10,27 @@ NULL
 ##' @S3method .gradio guiWidgetsToolkitQt
 .gradio.guiWidgetsToolkitQt <-  function(toolkit,
                                             items,selected=1, horizontal=FALSE, handler=NULL,
-                                            action=NULL, container=NULL, ...
+                                            action=NULL, container=NULL, ..., parent=NULL
                                             ) {
 
-  GRadio$new(toolkit, items, selected, horizontal,
-             handler, action, container, ...)
+  if(!is.null(parent)) {
+    ## A menu or toolbar item
+    GRadioMenuItems$new(toolkit, items, selected,
+                        handler, action, parent, ...)
+  } else {
+    GRadioButtons$new(toolkit, items, selected, horizontal,
+                      handler, action, container, ...)
+  }
 }
 
-
-## radio button class
 GRadio <- setRefClass("GRadio",
-                      contains="GButtonGroupWidget",
+                      contains="GButtonGroupWidget")
+
+
+  
+## radio button class
+GRadioButtons <- setRefClass("GRadioButtons",
+                      contains="GRadio",
                       methods=list(
                         initialize=function(toolkit, items, selected, horizontal,
                           handler, action, container, ...) {
@@ -59,3 +69,63 @@ GRadio <- setRefClass("GRadio",
                         }
                         ))
 
+
+## This is used in menubars
+GRadioMenuItems <- setRefClass("GRadioMenuItems",
+                               contains="GRadio",
+                               fields=list(
+                                 items="ANY"
+                                 ),
+                               methods=list(
+                                 initialize=function(toolkit, items, selected,
+                                   handler, action, parent, ...) {
+
+                                   widget <<- Qt$QActionGroup(getBlock(parent))
+                                   widget$setExclusive(TRUE)
+                                   
+                                   initFields(block=widget)
+                                   set_items(items)
+                                  # add_handler_changed(handler, action)
+
+                                 },
+                                 get_items=function(...) {
+                                   items
+                                 },
+                                 clear_items=function() {
+                                   sapply(widget$actions(), function(a) widget$removeAction(a))
+                                 },
+                                 make_items=function(menubar) {
+                                   sapply(items, function(i) {
+                                     a <- Qt$QAction(i, menubar)
+                                     a$setCheckable(TRUE)
+                                     widget$addAction(a)
+                                     menubar$addAction(a)
+                                   })
+                                 },
+                                 set_items=function(items,  ...) {
+                                   clear_items()
+                                   items <<- items
+                                 },
+                                 get_value=function(...) {
+                                   items[get_index()]
+                                 },
+                                 set_value=function(value, ...) {
+                                   idx <- match(value, items)
+                                   if(!is.na(idx))
+                                     set_index(idx)
+                                 },
+                                 get_index=function(...) {
+                                   which(sapply(widget$actions(), "qinvoke", "isChecked"))
+                                 },
+                                 set_index=function(value, ...) {
+                                   sapply(widget$actions(), "qinvoke", "setChecked", FALSE)
+                                   widget$actions()[[value]]$setChecked(TRUE)
+                                 },
+                                 add_handler_changed=function(handler, action=NULL, ...) {
+                                   add_handler("triggered", handler, action, ...)
+                                 },
+                                 set_exclusive=function(value) {
+                                   "TRUE for radio buttons, FALSE for checkboxgroup"
+                                   widget$setExclusive(as.logical(value))
+                                 }
+                                 ))
