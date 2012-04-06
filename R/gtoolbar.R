@@ -77,7 +77,11 @@ GToolBar <- setRefClass("GToolBar",
                           },
                           add_widget_toolitem=function(obj) {
                             "Add a widget to the toolbar"
-                            widget$addWidget(getBlock(obj))
+                            child <- getBlock(obj)
+                            if(is(child, "QWidget"))
+                              widget$addWidget(child)
+                            else if(is(child, "QAction"))
+                              widget$addAction(child)
                           },
                           clear_toolbar=function() {
                             "Clear toolbar items"
