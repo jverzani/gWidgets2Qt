@@ -59,7 +59,7 @@ GTable <- setRefClass("GTable",
                                 widget <<- Qt$QTableView()
 
                                 ## customize widget
-                                delegate <- qrTextFormattingDelegate()
+                                delegate <- qrTextFormattingDelegate(widget) # pass view as parent or store reference
                                 widget$setItemDelegate(delegate)
                                 ## no rows names
                                 widget$verticalHeader()$setVisible(FALSE)
@@ -108,8 +108,8 @@ GTable <- setRefClass("GTable",
                               },
                         get_model=function() {
                           "Helper. Get DataFrameModel from proxy"
-                          ## widget$model()$sourceModel() ## this was for proxy, but remove in due course
-                          widget$model()
+                          widget$model()$sourceModel() ## using proxy
+                          ## widget$model()            ## without a proxy
                         },
                         get_value=function(drop=TRUE, ...) {
                           idx <- get_index()
@@ -215,10 +215,10 @@ GTable <- setRefClass("GTable",
                           if(missing(i) && missing(j)) {
                             l <- extract_pieces(value)
                             q_model <<- qdataFrameModel(l$items, useRoles=TRUE)
-#                            proxy_model <<- Qt$QSortFilterProxyModel()
-#                            proxy_model$setSourceModel(q_model)
-#                            widget$setModel(proxy_model)
-                            widget$setModel(q_model)
+                            proxy_model <<- Qt$QSortFilterProxyModel()
+                            proxy_model$setSourceModel(q_model)
+                            widget$setModel(proxy_model)
+#                            widget$setModel(q_model)
                             q_model$setParent(widget) # avoids GC
                             set_icons(l$icons)
                             set_tooltips(l$tooltip)
