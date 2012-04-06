@@ -10,18 +10,28 @@ NULL
 ##' @S3method .gcheckbox guiWidgetsToolkitQt
 .gcheckbox.guiWidgetsToolkitQt <- function(toolkit,
                                               text, checked = FALSE, use.togglebutton=FALSE, handler = NULL, action = NULL,
-                                              container = NULL, ... ) {
-  if(use.togglebutton)
+                                              container = NULL, ..., parent=NULL) {
+
+  if(!is.null(parent)) {
+    ## A toolbar or menu bar!
+    GCheckboxMenuItem$new(toolkit, text, checked, handler, action, parent, ...)
+  } else if(use.togglebutton) {
     GToggleButton$new(toolkit,
                       text, checked, handler, action, container, ...)
-  else
-    GCheckbox$new(toolkit,
-                  text, checked, handler, action, container, ...)
+  } else {
+    GCheckboxRegular$new(toolkit,
+                         text, checked, handler, action, container, ...)
+  }
 }
 
-## Checkbox reference class
+
+
 GCheckbox <- setRefClass("GCheckbox",
-                         contains="GWidget",
+                         contains="GWidget",)
+
+## Checkbox reference class
+GCheckboxRegular <- setRefClass("GCheckboxRegular",
+                         contains="GCheckbox",
                          methods=list(
                            initialize=function(toolkit=NULL,
                              text="", checked = FALSE,
@@ -81,7 +91,7 @@ GCheckbox <- setRefClass("GCheckbox",
 
 ## Basic toggle button class
 GToggleButton <- setRefClass("GToggleButton",
-                             contains="GWidget",
+                             contains="GCheckbox",
                              methods=list(
                                initialize=function(toolkit=NULL,
                                  text, checked = FALSE,  handler = NULL, action = NULL,
@@ -117,3 +127,44 @@ GToggleButton <- setRefClass("GToggleButton",
                               }
                               ))
 
+
+GCheckboxMenuItem <- setRefClass("GCheckboxMenuItem",
+                                 contains="GCheckbox",
+                                 methods=list(
+                                   initialize=function(toolkit, text, checked, handler, action, parent, ...) {
+
+
+                                     widget <<- Qt$QAction(text, getBlock(parent))
+                                     widget$setCheckable(TRUE)
+                                     
+                                     initFields(block=widget)
+
+                                     ## icon
+                                     icon <- getStockIconByName(text)
+                                     if(!is.null(icon))
+                                       widget$setIcon(as_qicon(icon))
+
+                                     ## tooltip, statustip, ... could be passed in via ...
+                                     args <- list(...)
+                                     if(!is.null(args$tooltip))
+                                       widget$setToolTip(args$tooltip)
+                                     if(!is.null(args$status_tip))
+                                       widget$setStatusTip(args$status_tip)
+
+                                     
+                                     set_value(checked)
+
+                                     add_handler("toggled", handler, action)
+
+                                     callSuper(toolkit)
+                                   },
+                                   get_value=function(...) {
+                                     widget$checked
+                                   },
+                                   set_value=function(value) {
+                                     widget$setChecked(value)
+                                   }
+                                   ))
+                                     
+                                     
+                                     
