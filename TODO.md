@@ -11,7 +11,7 @@ DONE GWidget.R
 DONE gwindow.R
 DONE ggroup.R
 DONE gframe.R
-gexpandgroup.R
+DONE gexpandgroup.R
 DONE glayout.R
 DONE gpanedgroup.R
 DONE gnotebook.R
@@ -27,32 +27,29 @@ DONE  dialogs.R
 DONE  gaction.R
 DONE gbutton.R
 DONE  gcalendar.R
-gcheckbox.R (TOGGLE BUTTON)
+DONISH	gcheckbox.R (TOGGLE BUTTON)
 DONE gcheckboxgroup.R
 DONE gcombobox.R
- gdf.R
+gdf.R
 gdfnotebook.R
 DONE gedit.R:validation
 DONE gfile.R
 DONE ghtml.R
 DONE ggraphics.R
 DONE gimage.R
-DONE  glabel.R
-DONE  gmenu.R
+DONE glabel.R
+DONE gmenu.R (popups?)
 DONE  gradio.R
 DONE gseparator.R
 DONE gslider.R
-DONE  gspinbutton.R
-DONE  gstatusbar.R
-gsvg.R
- gtable.R (set_names, sort? Issue with model -- asked Michael,...)
- gtext.R
-DONE  gtimer.R
-DONE  gtoolbar.R
- gtree.R: 
+DONE gspinbutton.R
+DONE gstatusbar.R
+NO WIDGET gsvg.R
+gtable.R (set_names, sort?)
+gtext.R
+DONE gtimer.R
+DONE gtoolbar.R
+gtree.R: 
 gvarbrowser.R
- gwindow.R: 
 DONE  icons.R
-misc.R
-notebook-widgets.R
 
