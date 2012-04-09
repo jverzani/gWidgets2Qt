@@ -113,15 +113,11 @@ GEdit <- setRefClass("GEdit",
                                 callSuper(toolkit)
                               },
                               set_value=function(value,drop=TRUE, ...) {
-                                clear_init_txt()
                                 widget$setText(value)
                                 invoke_change_handler()
                               },
                               get_value=function(drop=TRUE, ...) {
-                                if(!init_msg_flag)
                                   widget$text
-                                else
-                                  ""
                               },
                               get_items=function(i, j, ..., drop=TRUE) {
                                 "i for index"
