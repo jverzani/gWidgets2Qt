@@ -47,7 +47,8 @@ GAction <- setRefClass("GAction",
                            if(is.null(icon))
                              icon <- label
                            icon <- getStockIconByName(icon)
-                           widget$setIcon(as_qicon(icon))
+                           if(!is.null(icon))
+                             widget$setIcon(as_qicon(icon))
                            
                            if(!is.null(key.accel)) {
                              ks <- Qt$QKeySequence(key.accel)
