@@ -16,12 +16,12 @@ NULL
   if(popup)
     GMenuPopup$new(toolkit, menu.list=menu.list,  ...)
   else
-    GMenuBar$new(toolkit, menu.list=menu.list, container = container, ...)
+    GMenuBarTop$new(toolkit, menu.list=menu.list, container = container, ...)
 }
 
 
-## Toplevel menu bar
-GMenuBarBase <- setRefClass("GMenuBarBase",
+## MenuBar objects (both MenuBar and Popup)
+GMenuBar <- setRefClass("GMenuBar",
                      contains="GWidget",
                      fields=list(
                        menu_list="list"
@@ -50,7 +50,8 @@ GMenuBarBase <- setRefClass("GMenuBarBase",
                              add_widget_menuitem(sub_menu, item)
                            }
                          })
-                         sub_menu$show()
+                         ## sub_menu$show()
+                         menu_list <<- items
                        },
                        add_submenu=function(parent_menu, items, nm) {
                          sub_menu <- Qt$QMenu(parent_menu)
@@ -96,8 +97,8 @@ GMenuBarBase <- setRefClass("GMenuBarBase",
                        ))
 
 
-GMenuBar <- setRefClass("GMenuBar",
-                            contains="GMenuBarBase",
+GMenuBarTop <- setRefClass("GMenuBarTop",
+                            contains="GMenuBar",
                             methods=list(
                               initialize=function(toolkit=NULL,
                                 menu.list=list(),
@@ -122,7 +123,7 @@ GMenuBar <- setRefClass("GMenuBar",
                               ))
 ## Popup class
 GMenuPopup <- setRefClass("GMenuPopup",
-                            contains="GMenuBarBase",
+                            contains="GMenuBar",
                             methods=list(
                               initialize=function(toolkit=NULL,
                                 menu.list=list(),
