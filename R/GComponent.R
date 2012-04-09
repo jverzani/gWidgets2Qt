@@ -50,14 +50,14 @@ GComponent <- setRefClass("GComponent",
                                  },
                                  get_visible = function() widget$visible,
                                  set_visible = function(value) widget$setVisible(as.logical(value)),
-                                 get_enabled = function() widget$Enabled,
+                                 get_enabled = function() widget$enabled,
                                  set_enabled = function(value) widget$setEnabled(as.logical(value)),
                                  set_font = function(value) {
                                    message("XXX")
                                  },
                                  ## size, size<-
                                  get_size=function() {
-                                   "Returns size hint. (Is there a better choice?"
+                                   "Returns size hint. (Is there a better choice?)"
                                    c(width=block$width, height=block$height)
                                  },
                                  set_size=function(value) {
@@ -304,40 +304,26 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                       },
                                       ## XXX add stibs for others
                                       ##
-                                      add_popup_menu = function(menulist, action=NULL, ...) {
-                                        ## XXX need to do for Qt
-                                        if(is(menulist, "list")) 
-                                          mb <- gmenu(menulist, popup=TRUE)
-                                        else
-                                          mb <- menulist
-                                        if(!is(mb, "GMenuPopup"))
-                                          stop("Pass in popupmenu or list defining one")
-
-                                        f <- function(w, e, ...) {
-                                          ## Fixed count in newest RGtk2
-                                          if(e$button == 1 && e$type == GdkEventType['button-press']) {
-                                            mb$widget$popup(button=e$button, activate.time=e$time)
-                                          }
-                                          FALSE
-                                        }
-                                        gSignalConnect(handler_widget(), "button-press-event", f)
+                                      add_popup_menu = function(mb, action=NULL, ...) {
                                       },
-                                      add_3rd_mouse_popup_menu=function(menulist, action=NULL, ...) {
-                                        if(is(menulist, "list")) 
-                                          mb <- gmenu(menulist, popup=TRUE)
-                                        else
-                                          mb <- menulist
-                                        if(!is(mb, "GMenuPopup"))
-                                          stop("Pass in popupmenu or list defining one")
+                                      add_3rd_mouse_popup_menu=function(mb, action=NULL, ...) {
+                                        ## XXX need to do for Qt
                                         
-                                        f <- function(w, e, ...) {
-                                          ## make work wih mac and right mouse!!!
-                                          if(isRightMouseClick(e)) {
-                                            mb$widget$popup(button=e$button, activate.time=e$time)
-                                          }
-                                          FALSE
+                                        if(is(mb, "list")) 
+                                          mb <- gmenu(mb, popup=TRUE)
+
+                                        if(!is(mb, "GMenuPopup"))
+                                          stop("Pass in popup menu or list defining one")
+
+                                        widget$setContextMenuPolicy(Qt$Qt$CustomContextMenu)                                        
+                                        
+                                        handler <- function(pt) {
+                                          ## This pops up in upper left corner
+                                          ## might want to move down and over right to center?
+                                          mb$widget$exec(widget$mapToGlobal(Qt$QPoint(0,0)))
                                         }
-                                        gSignalConnect(handler_widget(), "button-press-event", f)
+                                        
+                                        qconnect(handler_widget(), "customContextMenuRequested", handler)
                                       }
 
 
