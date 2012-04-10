@@ -150,7 +150,7 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                  model$setParent(widget)
 
                                  ## no cell editing
-                                 widget$editTriggers <- Qt$QAbstractItemView$NoEditTriggers 
+                                 widget$editTriggers <<- Qt$QAbstractItemView$NoEditTriggers 
                                  ## alternate shading
                                  widget$setAlternatingRowColors(TRUE)
                                  ## stretch last section
@@ -160,9 +160,23 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                  widget$verticalHeader()$setVisible(FALSE)
                                  widget$horizontalHeader()$setVisible(FALSE)
 
+                                 ## update check box when clicking item
+                                 ## "clicked" is more natural, but that disables the checkbox
+                                 qconnect(widget, "doubleClicked", function(index) {
+                                   ## toggle
+                                   model <- widget$model()
+                                   item <- model$itemFromIndex(index)
+                                   ## use checked enum is 0 or 2
+                                   item$setCheckState(2 - as.numeric(item$checkState()))
+##                                   invoke_change_handler("checkbox-changed")
+                                 })
+                                 qconnect(model, "itemChanged", function(item) {
+                                   invoke_change_handler("checkbox-changed")
+                                 })
+                                 
                                  initFields(
                                             block=widget,
-                                            change_signal="activated"
+                                            change_signal="checkbox-changed"
                                             )
 
                                  set_items(items)
@@ -174,6 +188,7 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
 
                                  callSuper(toolkit)
                                },
+                              connect_to_toolkit_signal=function(...) {},
                               get_value=function(drop=TRUE, ...) {
                                 get_items(get_index())
                               },
@@ -192,6 +207,9 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                 which(checked)
                               },
                               set_index=function(value, ...) {
+                                block_observers()
+                                on.exit(unblock_observers())
+                                
                                 model <- widget$model()
                                 idx <- rep(Qt$Qt$Unchecked, model$rowCount())
                                 idx[value] <- Qt$Qt$Checked
@@ -199,6 +217,8 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                 indices <- sapply(1:model$rowCount(), function(i) model$index(i-1,0))
                                 items <- sapply(indices, function(idx) model$itemFromIndex(idx))
                                 mapply(qinvoke, items, "setCheckState", idx)
+
+                                invoke_change_handler("checkbox-changed")
                               },
                               get_items = function(i, ...) {
                                 model <- widget$model()
@@ -241,7 +261,7 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                     }
                                     ## tooltip
                                     if(ncol(value) >= 3) {
-                                      item$setToolTip(value[i,3])
+                                      item$setToolTip(as.character(value[i,3]))
                                     }
                                     model$appendRow(item)
                                   }
@@ -264,7 +284,7 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                         item$setIcon(as_qicon(icon))
                                     }
                                     if(length(vals) >= 3)
-                                      item$setToolTip(vals[[3]])
+                                      item$setToolTip(as.charactrer(vals[[3]]))
                                   }
 
                                   value_rows <- lapply(1:nrow(value), function(i) value[i,,drop=FALSE])
