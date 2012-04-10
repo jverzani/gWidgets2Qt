@@ -58,8 +58,14 @@ GFormLayout <- setRefClass("GFormLayout",
                                ## bookkeeping
                                if(is(child, "GComponent"))
                                  child$set_parent(.self)
+                               ## we keep names here for get_value method
+                               nms <- names(children)
                                children <<- c(children, child)
-                               
+                               names(children) <<- c(nms, label)
+                             },
+                             get_value=function(...) {
+                               "Return list of widget values"
+                               sapply(children, svalue, simplify=FALSE) # not get_value, as that doesn't call coerce_with
                              },
                              ## some Qt methods
                              set_label_alignment=function(align) {
