@@ -109,6 +109,8 @@ GComboBox <- setRefClass("GComboBox",
                              nc <- ncol(items)
                              m <- data.frame(x = items[,1], stringsAsFactors=FALSE)
                              model <- qdataFrameModel(m, useRoles=TRUE)
+                             model$setParent(widget) # avoid premature garbage collection
+                             
                              if(nc >= 2) {
                                icons <- items[,2]
                                qdataFrame(model)$.x.decoration <- lapply(lapply(icons, getStockIconByName), as_qicon)
@@ -118,6 +120,7 @@ GComboBox <- setRefClass("GComboBox",
 
                              ## set if possible
                              widget$setModel(model)
+
 #                             if(cur_idx > 0)
 #                               widget$setCurrentIndex(cur_idx-1)
                              widget$update()
