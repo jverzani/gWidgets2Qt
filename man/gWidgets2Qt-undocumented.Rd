@@ -36,6 +36,7 @@
 \alias{.gtable.guiWidgetsToolkitQt}
 \alias{.gtimer.guiWidgetsToolkitQt}
 \alias{.gtoolbar.guiWidgetsToolkitQt}
+\alias{.gtree.guiWidgetsToolkitQt}
 \alias{.stockIconFromObject.guiWidgetsToolkitQt}
 \alias{addToStockIcons}
 \title{add stock icons}
@@ -191,6 +192,12 @@
   \method{.gmenu}{guiWidgetsToolkitQt} (toolkit,
     menu.list = list(), popup = FALSE, container = NULL,
     ...)
+
+  \method{.gtree}{guiWidgetsToolkitQt} (toolkit,
+    offspring = NULL, offspring.data = NULL,
+    chosen.col = 1, offspring.col = 2, icon.col = NULL,
+    tooltip.col = NULL, multiple = FALSE, handler = NULL,
+    action = NULL, container = NULL, ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -384,6 +391,23 @@
 
   \item{popup}{logical. If true, make a popup window to be
   added through a handler call}
+
+  \item{x}{Data frame. Optional, if given specify INDICES
+  value to split data into heirarchical data structure}
+
+  \item{offspring}{function. A function passed values
+  \code{path} and \code{data}, the latter from
+  \code{offspring.data}. The path is the current position
+  of the parent item using the named keys from the chosen
+  column.}
+
+  \item{offspring.data}{Passed to second argument of
+  \code{offspring} function. Used to parameterize a
+  function call.}
+
+  \item{offspring.col}{integer or column name. Points to
+  column containing logical values indicating if a row has
+  offspring.}
 }
 \value{
   NULL
@@ -461,6 +485,8 @@
   Toolkit constructor
 
   Toolkit button constructor
+
+  Toolkit constructor
 
   Toolkit constructor
 
