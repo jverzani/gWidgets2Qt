@@ -33,10 +33,10 @@ GTree <- setRefClass("GTree",
                        offspring_col="IntegerOrNULL",
                        icon_col="IntegerOrNULL",
                        tooltip_col="IntegerOrNULL",
+                       #
                        offspring_data="ANY",
                        offspring="function",
-                       multiple="logical",
-                       itemsWithChildren="list"
+                       multiple="logical"
                        ),
                      methods=list(
                        initialize=function(toolkit=NULL,
@@ -45,7 +45,11 @@ GTree <- setRefClass("GTree",
                          multiple = FALSE,
                          handler=NULL, action=NULL, container=NULL, ...) {
 
+                         ## create view and style
                          widget <<-  Qt$QTreeView()
+                         widget$setEditTriggers(Qt$QAbstractItemView$NoEditTriggers)
+                         widget$setSelectionBehavior(Qt$QAbstractItemView$SelectRows)
+                         
                          ## call offspring to get data frame
                          items <- offspring(c(), offspring.data)
 
@@ -73,10 +77,9 @@ GTree <- setRefClass("GTree",
                                     icon_col = icon.col,
                                     tooltip_col=tooltip.col,
                                     offspring_data=offspring.data,
-                                    change_signal="itemDoubleClicked", # or itemActivated for single?
+                                    change_signal="activated", # or itemActivated for single?
                                     default_expand=TRUE,
-                                    default_fill=TRUE,
-                                    toolkit=toolkit # needed here for gmenu call later
+                                    default_fill=TRUE
                                     )
 
                       
@@ -87,7 +90,7 @@ GTree <- setRefClass("GTree",
                          init_model()
                          add_offspring(character(0), NULL)
 
-                         ## handlers
+                         ## handlers for expand and contract
                          qconnect(widget, "expanded", function(idx) {
                            item <- widget$model()$itemFromIndex(idx)
                            assign("item", item, .GlobalEnv)
@@ -109,13 +112,19 @@ GTree <- setRefClass("GTree",
                          callSuper(toolkit)
                        },
                        init_model=function() {
+                         "Initialize model. Need to add in number of column and names"
                          DF <- offspring_pieces(character(0))$DF
                          model <- Qt$QStandardItemModel(rows=0, columns=ncol(DF))
                          model$setHorizontalHeaderLabels(names(DF))
                          widget$setModel(model)
                          model$setParent(widget) # avoid early GC
                        },
-                       path_from_item=function(item) {
+                       path_from_index=function(idx, ...) {
+                         "convert index to item, then call path_from_item"
+                         item <- widget$model()$itemFromIndex(idx)
+                         path_from_item(item)
+                       },
+                       path_from_item=function(item, return_path=TRUE, return_index=TRUE) {
                          "Return list(path,index) from item"
                          path <- c()
                          indices <- c()
@@ -131,11 +140,14 @@ GTree <- setRefClass("GTree",
                          }
                          path <- c(item$text(), path)
                          indices <- c(model$indexFromItem(item)$row() + 1L, indices)
-                         
-                         return(list(path=path, indices=indices))
+
+                         l <- list()
+                         if(return_path) l$path <- path
+                         if(return_index) l$indices <- indices
+                         return(l)
                        },
-                       add_offspring=function(path, item) {
-                         "add offspring"
+                       add_offspring=function(path, item=NULL) {
+                         "Helper: add offspring for the path at the item"
 
                          if(is.null(item))
                            item <- widget$model()$invisibleRootItem()
@@ -150,13 +162,8 @@ GTree <- setRefClass("GTree",
                          }
                        },
                        add_row=function(parent_item, DF_row, offspring=FALSE, icon=NULL, tooltip=NULL) {
+                         "Helper: function to add a row. Called by add_offspring"
                          ## values
-                         cat("add_row")
-                         print(parent_item)
-                         print(DF_row)
-                         print("===")
-
-                         
                          l <- lapply(as.character(unlist(DF_row)), Qt$QStandardItem)
                          parent_item$appendRow(l)
 
@@ -166,7 +173,7 @@ GTree <- setRefClass("GTree",
 
                          ## tooltip
                          if(!is.null(tooltip))
-                           l[[1]]$setToolTip(tooltip)
+                           l[[1]]$setToolTip(as.character(tooltip))
                          
                          if(offspring) {
                            ## set bogus child to make trigger icon appear
@@ -174,7 +181,7 @@ GTree <- setRefClass("GTree",
                          }
                        },
                        offspring_pieces=function(path) {
-                         "Compute offspring, return pieces DF, offspring, icon, tooltip in a list"
+                         "Helper: Compute offspring, return pieces DF, offspring, icon, tooltip in a list"
                          os <- offspring(path, offspring.data)
                          the_offspring <- icon <- tooltip <- NULL
                          if(!is.null(offspring_col))
@@ -192,43 +199,6 @@ GTree <- setRefClass("GTree",
 
                          list(DF=DF, offspring=the_offspring, icon=icon, tooltip=tooltip)
                        },
-                       ## we need to keep track of which items have children,
-                       ## as there is no way within Qt to do so except childCount
-                       ## and we don't have the count until we expand
-                       itemHasChild = function(item) {
-                         itemsWithChildren[[digest(item)]] <<- TRUE
-                       },
-                       itemHasNoChild = function(item) {
-                         itemsWithChildren[[digest(item)]] <<- NULL
-                       },
-                       doesItemHaveChildren = function(item) {
-                         id <- digest(item)
-                         !is.null(itemsWithChildren[[id]])
-                       },
-                       ## helper to make a child item
-                       makeChildItem=function(data, hasChild=FALSE, icon=NULL) {
-                         ##
-                         if(length(data) == 0) {
-                           cat("Need some data")
-                           data=list("nothing here")
-                         }
-
-                         data <- as.list(data)
-                         
-                         if(icon == "")
-                           icon <- NULL
-                         item <- list(icon=icon,
-                                      data=data,
-                                      children=list()
-                                      )
-                         
-                         if(is.na(hasChild) || !hasChild)
-                           item$children <- NULL
-                         
-                         class(item) <- c("childItem", class(item))
-                         item
-                       },
-                      
                        
                        set_selection_mode=function(mode=c("none", "single", "browse", "multiple", "extended")) {
                          "Helper: Set the selection mode (from gtable)"
@@ -241,44 +211,111 @@ GTree <- setRefClass("GTree",
                          widget$setSelectionMode(sel_mode)
                        },
                        set_multiple=function(value) {
-                         if(value) {
-                           set_selection_mode("multiple")
-                           multiple <<- TRUE
-                         } else {
-                           set_selection_mode("single")
-                           multiple <<- FALSE
-                         }
+                         set_selection_mode(ifelse(value, "multiple", "single"))
+                         multiple <<- value
                        },
-                           
-                       ## main methods
-                       get_value=function(i, drop=TRUE,...) {
+                       ## main interface
+                       get_value=function(drop=TRUE,...) {
                          "Return path (by chosen col)"
+                         sel_model <- widget$selectionModel()
+                         selected_rows <- sel_model$selectedRows() # a list of QModelIndex
+                         if(length(selected_rows) == 0)
+                           return(NULL) # no selection XXX what return value? character(0)?
+                         out <- lapply(selected_rows, .self$path_from_index)
+                         out <- lapply(out, function(i) i$path)
+
+                         drop <- ifelse(is.null(drop), FALSE, drop)
+                         if(drop)
+                           out <- lapply(out, function(i) tail(i, n=1))
+                         
+                         if(length(out) == 1)
+                           return(out[[1]])
+                         else
+                           return(out)
                        },
                        set_value=function(value, ...) {
                          "open path, set via match"
                          ## this is trickier than it look
                          
                        },
-                       get_index = function(...) {
-                         "get path index as integer vector"
+                       get_index = function(drop=FALSE, ...) {
+                         "get  index as integer vector"
+                         ## Shares *much* code with get_value (only i$indices below). Tighten up
+                         sel_model <- widget$selectionModel()
+                         selected_rows <- sel_model$selectedRows() # a list of QModelIndex
+                         if(length(selected_rows) == 0)
+                           return(NULL) # no selection XXX what return value? character(0)?
+                         out <- lapply(selected_rows, .self$path_from_index)
+                         out <- lapply(out, function(i) i$indices)
+
+                         drop <- ifelse(is.null(drop), FALSE, drop)
+                         if(drop)
+                           out <- lapply(out, function(i) tail(i, n=1))
+                         
+                         if(length(out) == 1)
+                           return(out[[1]])
+                         else
+                           return(out)
                        },
                        set_index = function(value,...) {
                          "open to specifed index, if possible"
-                         ## value may be a list
+                         ## value may be a list, here we recurse if it is
+                         if(is.list(value)) sapply(value, set_index)
+
+                         ## value is index vector
+                         model <- widget$model()
+                         node <- model$invisibleRootItem()
+                         while(length(value)) {
+                           child <- node$child(value[1] - 1)
+                           if(is.null(child))
+                             return()   # nothing to do, doesn't match
+                           ## open
+                           if(length(value) > 1) {
+                             idx <- model$indexFromItem(child)
+                             if(child$hasChildren())
+                               widget$expand(idx)
+                           }
+                           
+                           node <- child
+                           value <- value[-1]
+                         }
+
+                         ## select node
+                         item <- model$indexFromItem(node)
+                         sel_model <- widget$selectionModel()
+                         sel_model$select(item,
+                                          Qt$QItemSelectionModel$Select |
+                                          Qt$QItemSelectionModel$Rows |
+                                          Qt$QItemSelectionModel$Clear
+                                          )
+                         
+                         
                        },
                        get_items = function(i, j, ..., drop=TRUE) {
                          "Get items in the selected row"
+                         out <- get_value(drop=FALSE)
+                         ## XXX clarify what this does ...
+                         out
                        },
                        set_items = function(value, i, j, ...) {
                          stop(gettext("One sets items at construction through the x argument of offspring function"))
                        },
                        get_names=function() {
-                         
+                         "Get column names"
+                         model <- widget$model()
+                         sapply(1:model$columnCount(), function(i) model$horizontalHeaderItem(i-1)$data(0))
                        },
                        set_names=function(value) {
+                         ## Should be set via offspring, but it isn't so hard:
+                         widget$model()$setHorizontalHeaderLabels(value)
                        },
                        update_widget=function(...) {
                          "Update base of widget, reopen selected paths if possible"
+                         cur_selection <- as.list(get_index())
+                         model <- widget$model()
+                         model$setRowCount(0)
+                         add_offspring(character(0), NULL)
+                         sapply(cur_selection, set_index)
                        },
                        ##
                        add_handler_changed=function(handler, action=NULL, ...) {
@@ -286,7 +323,8 @@ GTree <- setRefClass("GTree",
                        },
                        ## Some extra methods
                        clear_selection=function() {
-
+                         sel_model <- widget$selectionModel()
+                         sel_model$clear()
                        }
                        ))
 
