@@ -40,7 +40,7 @@ as_qicon <- function(icon) {
     
 
 
-##' return stock id
+##' return stock id. With Qt use \code{as_qicon} to create icon
 ##'
 ##' @param name name of icon
 ##' @export
@@ -48,12 +48,16 @@ as_qicon <- function(icon) {
 ##' @method .getStockIconByName guiWidgetsToolkitQt
 ##' @S3method .getStockIconByName guiWidgetsToolkitQt
 .getStockIconByName.guiWidgetsToolkitQt <- function(toolkit, name, ...) {
-  icons <- getStockIcons(toolkit)
 
-  if(!missing(name) && is.character(name) && nchar(name) > 0)
-    icons[[name, exact=TRUE]]
-  else
-    NULL
+  if(missing(name)) return(NULL)
+  if(is.factor(name))
+    name <- as.character(name)
+  if(nchar(name) == 0)
+    return(NULL)
+
+  ## okay, return icon if there, else NULL
+  icons <- getStockIcons(toolkit)
+  icons[[name, exact=TRUE]]
 }
 
 
