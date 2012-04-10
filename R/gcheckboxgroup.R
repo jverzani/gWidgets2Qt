@@ -143,8 +143,14 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                 handler = NULL,
                                 action = NULL, container = NULL, ... ) {
 
-                                 widget <<- Qt$QTableWidget()
-                                 widget$setColumnCount(1)
+                                
+                                 widget <<- Qt$QTableView()
+                                 model <- Qt$QStandardItemModel(rows=0, columns=1L)
+                                 widget$setModel(model)
+                                 model$setParent(widget)
+
+                                 ## no cell editing
+                                 widget$editTriggers <- Qt$QAbstractItemView$NoEditTriggers 
                                  ## alternate shading
                                  widget$setAlternatingRowColors(TRUE)
                                  ## stretch last section
@@ -156,7 +162,7 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
 
                                  initFields(
                                             block=widget,
-                                            change_signal="itemChanged"
+                                            change_signal="activated"
                                             )
 
                                  set_items(items)
@@ -177,47 +183,34 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                 set_index(ind)
                               },
                               get_index = function(...) {
-                                n <- widget$rowCount
-                                if(n == 0)
-                                  return(logical(0))
-            
-                                vals <- sapply(1:n, function(i) {
-                                  item <- widget$item(i-1, 0)
-                                  as.logical(item$checkState()) ## 0 -> FALSE, 2 -> TRUE
-                                })
-                                which(vals)
+                                model <- widget$model()
+                                if(model$rowCount() == 0) return(integer(0))
+                                
+                                indices <- sapply(1:model$rowCount(), function(i) model$index(i-1,0))
+                                items <- sapply(indices, function(idx) model$itemFromIndex(idx))
+                                checked <- sapply(items, function(item) item$checkState() ==  Qt$Qt$Checked)
+                                which(checked)
                               },
                               set_index=function(value, ...) {
-                                n <- get_length()
-                                if(n < 1) return()
-                                if(is.logical(value)) {
-                                  ## recycle
-                                  value <- as.logical(rep(value, length=n))
-                                } else {
-                                  ## integer, convert
-                                  value <- 1:n %in% value
-                                }
-                                state <- sapply(value, function(i) ifelse(i, Qt$Qt$Checked, Qt$Qt$Unchecked))
-                                lapply(1:n, function(i) {
-                                  item <- widget$item(i-1, 0)
-                                  item$setCheckState(state[i])
-                                })
+                                model <- widget$model()
+                                idx <- rep(Qt$Qt$Unchecked, model$rowCount())
+                                idx[value] <- Qt$Qt$Checked
+                                
+                                indices <- sapply(1:model$rowCount(), function(i) model$index(i-1,0))
+                                items <- sapply(indices, function(idx) model$itemFromIndex(idx))
+                                mapply(qinvoke, items, "setCheckState", idx)
                               },
                               get_items = function(i, ...) {
-                                n <- get_length()
-                                if(n == 0) return(character(0))
-                                
-                                items <- sapply(seq_len(n), function(i) {
-                                  item <- widget$item(i-1, 0)
-                                  item$text()
-                                })
-                                items[i]
+                                model <- widget$model()
+                                indices <- sapply(1:model$rowCount(), function(i) model$index(i-1,0))
+                                items <- sapply(indices, function(idx) model$itemFromIndex(idx))
+                                sapply(items, function(item) item$data(0))
                               },
                               set_items = function(value, i, ...) {
 
                                 block_observers()
                                 on.exit(unblock_observers())
-                                
+
                                 ## value can be a vector or data frame
                                 ## if a data.frame we have
                                 ## text, [stockicon, [tooltip]]
@@ -225,49 +218,64 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                   value <- data.frame(value, stringsAsFactors=FALSE)
                                 else if(!is.data.frame(value))
                                   value <- data.frame(value, stringsAsFactors=FALSE)
+
+                                model <- widget$model()
                                 
-                                            
-                                ## get i
+                                ## replace or update?
                                 if(missing(i)) {
-                                  widget$setRowCount(nrow(value))
-                                  i <- seq_len(nrow(value))
+
+                                  ## set items
+                                  model$clear() # out with old
+                                  m <- nrow(value)
+                                  if(m == 0) # no rows
+                                    return(x)
+                                  
+                                  for(i in 1:m) {
+                                    item <- Qt$QStandardItem(value[i,1])
+                                    item$setCheckable(TRUE)
+                                    ## icons
+                                    if(ncol(value) >=2) {
+                                      icon <- getStockIconByName(value[i,2])
+                                      if(!is.null(icon))
+                                        item$setIcon(as_qicon(icon))
+                                    }
+                                    ## tooltip
+                                    if(ncol(value) >= 3) {
+                                      item$setToolTip(value[i,3])
+                                    }
+                                    model$appendRow(item)
+                                  }
+                                } else {
+                                  ## update items, not replace
+                                  if(length(i) != nrow(value))
+                                    stop(gettext("Unequal lengths for items and index"))
+                                  if(nrow(value) == 0)
+                                    return() # nothing to do
+                                  
+                                  indices <- sapply(1:model$rowCount(), function(i) model$index(i-1,0))
+                                  items <- sapply(indices, function(idx) model$itemFromIndex(idx))
+
+                                  update_item <- function(item, vals) {
+                                    ## vals is list from DF extraction
+                                    item$setData(vals[[1]], 0)
+                                    if(length(vals) >= 2) {
+                                      icon <- getStockIconByName(vals[[2]])
+                                      if(!is.null(icon))
+                                        item$setIcon(as_qicon(icon))
+                                    }
+                                    if(length(vals) >= 3)
+                                      item$setToolTip(vals[[3]])
+                                  }
+
+                                  value_rows <- lapply(1:nrow(value), function(i) value[i,,drop=FALSE])
+                                  mapply(update_item, items[i], value_rows)
+                                  
                                 }
-            
-                                if(is.logical(i))
-                                  i <- which(i)
-
-                                ## set items
-                                widget$clear()
-                                m <- nrow(value)
-                                if(m == 0)
-                                  return(x)
-            
-                                lapply(1:m, function(i) {
-                                  item <- Qt$QTableWidgetItem(as.character(value[i,1]))
-                                  flags <- Qt$Qt$ItemIsEditable | Qt$Qt$ItemIsUserCheckable | Qt$Qt$ItemIsEnabled
-                                  item$setFlags(flags) 
                                   
-                                  item$setCheckState(Qt$Qt$Unchecked) # default, adjust
-
-                                  if(ncol(value) >= 2) {
-                                    icon <- value[i,2]
-                                    icon <- getStockIconFromName(icon)
-                                    if(!is.null(icon)) 
-                                      item$setIcon(icon)
-                                  }
-                                  
-                                  if(ncol(value) >= 3) {
-                                    tooltip <- value[i,3]
-                                    if(!is.null(tooltip))
-                                      item$setToolTip(tooltip)
-                                  }
-                                  
-                                  widget$setItem(i - 1, 0, item)
-                                })            
                               },
                               get_length = function() {
-                                "Number of items to choose from"
-                                widget$rowCount
-                              }
+                                  "Number of items to choose from"
+                                  widget$model()$rowCount()
+                                }
 
                               ))
