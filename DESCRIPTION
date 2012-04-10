@@ -55,3 +55,4 @@ Collate:
     'gmenu.R'
     'gtree.R'
     'gvarbrowser.R'
+    'gtext.R'

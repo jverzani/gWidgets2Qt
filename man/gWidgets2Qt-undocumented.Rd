@@ -34,6 +34,7 @@
 \alias{.gstackwidget.guiWidgetsToolkitQt}
 \alias{.gstatusbar.guiWidgetsToolkitQt}
 \alias{.gtable.guiWidgetsToolkitQt}
+\alias{.gtext.guiWidgetsToolkitQt}
 \alias{.gtimer.guiWidgetsToolkitQt}
 \alias{.gtoolbar.guiWidgetsToolkitQt}
 \alias{.gtree.guiWidgetsToolkitQt}
@@ -203,6 +204,11 @@
   \method{.gvarbrowser}{guiWidgetsToolkitQt} (toolkit,
     handler = NULL, action = "summary", container = NULL,
     ...)
+
+  \method{.gtext}{guiWidgetsToolkitQt} (toolkit,
+    text = NULL, width = NULL, height = 300,
+    font.attr = NULL, wrap = TRUE, handler = NULL,
+    action = NULL, container = NULL, ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -413,6 +419,20 @@
   \item{offspring.col}{integer or column name. Points to
   column containing logical values indicating if a row has
   offspring.}
+
+  \item{font.attr}{font attributes for text buffer. One can
+  also specify font attributes for insertion. The font
+  attributes are specified with a named vector or list,
+  with names and values coming from: \describe{
+  \item{weight}{ in c("light", "normal", "bold", "heavy")}
+  \item{style}{inc("normal", "oblique", "italic")}
+  \item{family}{in c("sans", "helvetica", "times",
+  "monospace")} \item{size}{in c("xx-small", "x-small",
+  "small", "medium", "large", "x-large", "xx-large")}
+  \item{foreground}{a value in colors()}
+  \item{background}{a value in colors()} }}
+
+  \item{wrap}{logical do lines wrap}
 }
 \value{
   NULL
@@ -501,5 +521,7 @@
   Toolkit constructor
 
   Toolkit constructor
+
+  toolkit implementation
 }
 

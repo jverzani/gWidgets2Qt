@@ -46,10 +46,10 @@ DONE gspinbutton.R
 DONE gstatusbar.R
 NO WIDGET gsvg.R
 gtable.R (set_names, sort?)
-gtext.R
+DONE gtext.R
 DONE gtimer.R
 DONE gtoolbar.R
-gtree.R: 
-gvarbrowser.R
+DONE gtree.R: 
+DONISH gvarbrowser.R (DND, context menu_
 DONE  icons.R
 
