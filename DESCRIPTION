@@ -54,3 +54,4 @@ Collate:
     'gtoolbar.R'
     'gmenu.R'
     'gtree.R'
+    'gvarbrowser.R'

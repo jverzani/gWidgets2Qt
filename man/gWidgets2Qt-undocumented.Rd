@@ -37,6 +37,7 @@
 \alias{.gtimer.guiWidgetsToolkitQt}
 \alias{.gtoolbar.guiWidgetsToolkitQt}
 \alias{.gtree.guiWidgetsToolkitQt}
+\alias{.gvarbrowser.guiWidgetsToolkitQt}
 \alias{.stockIconFromObject.guiWidgetsToolkitQt}
 \alias{addToStockIcons}
 \title{add stock icons}
@@ -198,6 +199,10 @@
     chosen.col = 1, offspring.col = 2, icon.col = NULL,
     tooltip.col = NULL, multiple = FALSE, handler = NULL,
     action = NULL, container = NULL, ...)
+
+  \method{.gvarbrowser}{guiWidgetsToolkitQt} (toolkit,
+    handler = NULL, action = "summary", container = NULL,
+    ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -418,7 +423,8 @@
   Returns list of icons. Names are stock ids; value is
   related to an icon (an icon or name...)
 
-  return stock id
+  return stock id. With Qt use \code{as_qicon} to create
+  icon
 
   helper function
 
@@ -485,6 +491,8 @@
   Toolkit constructor
 
   Toolkit button constructor
+
+  Toolkit constructor
 
   Toolkit constructor
 
