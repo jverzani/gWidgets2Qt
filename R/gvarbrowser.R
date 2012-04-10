@@ -182,7 +182,7 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                   item <- add_value(x, nm, parent_item)
                                   parent_item$sortChildren(0L)
                                   ## cache
-                                  item_list[[nm]] <- item
+                                  item_list[[nm]] <<- item
                                 }
                                 update_item <- function(x, nm) {
                                   remove_item(nm)
