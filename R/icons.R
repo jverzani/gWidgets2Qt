@@ -201,13 +201,13 @@ load_gwidget_icons <- function() {
 ##' @S3method .stockIconFromObject guiWidgetsToolkitQt
 .stockIconFromObject.guiWidgetsToolkitQt <- function(toolkit, obj, ...) {
   icon_for_object <- function(x) UseMethod("icon_for_object")
-  icon_for_object.default <- function(x) "gw-symbol_dot"
-  icon_for_object.numeric <- function(x) "gtk-numeric"
-  icon_for_object.numeric <- function(x) "gw-numeric"
-  icon_for_object.factor <- function(x) "gw-factor"
-  icon_for_object.character <- function(x) "gw-character"
-  icon_for_object.function <- function(x) "fw-function"
-  icon_for_object.data.frame <- function(x) "gw-dataframe"
+  icon_for_object.default <- function(x) "symbol_square"
+  icon_for_object.numeric <- function(x) "numeric"
+  icon_for_object.factor <- function(x) "factor"
+  icon_for_object.character <- function(x) "character"
+  icon_for_object.function <- function(x) "function"
+  icon_for_object.data.frame <- function(x) "dataframe"
+  icon_for_object.matrix <- function(x) "matrix"
   
   icon_for_object(obj)
 }
