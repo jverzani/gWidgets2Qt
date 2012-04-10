@@ -21,18 +21,20 @@ GTimer <- setRefClass("GTimer",
                         interval="integer",
                         data="ANY",
                         FUN="ANY",
-                        ID = "ANY"
+                        ID = "ANY",
+                        started="logical"
                         ),
                       methods=list(
                         initialize=function(toolkit=guiToolkit(), ms, FUN=function(...) {},
                           data=NULL,
-                          one.shot=FALSE, start=TRUE) {
+                          one.shot=FALSE, started=FALSE, start=TRUE) {
                           
 
 
                           initFields(timer=Qt$QTimer(),
                                      data=data,
-                                     FUN=FUN
+                                     FUN=FUN,
+                                     started=FALSE
                                      )
 
                           set_interval(ms)
@@ -59,9 +61,10 @@ GTimer <- setRefClass("GTimer",
                         start_timer = function() {
                           "Start the timer"
                           timer$start(interval)     
-
+                          started <<- TRUE
                         },
                         stop_timer = function() {
                           "stop the timer"
                           timer$stop()
+                          started <<- FALSE
                         }))
