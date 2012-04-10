@@ -51,7 +51,7 @@ GSlider <- setRefClass("GSlider",
 
                            ## show tooltip with value
                            qconnect(widget, "valueChanged", function(value) {
-                             widget$setToolTip(get_items()[value])
+                             widget$setToolTip(as.character(get_items()[value]))
                            })
                            
                            set_value(value[1])
