@@ -79,9 +79,9 @@ QtPredefinedIcons <- c("question"=Qt$QMessageBox$Question,
   
             
   mb$setWindowTitle(title)
-  mb$setText(message[1])
-  if(length(message) >= 2)
-    mb$setInformativeText(message[2])
+  mb$setText(msg[1])
+  if(length(msg) >= 2)
+    mb$setInformativeText(msg[2])
   
   icon = match.arg(icon)
   mb$setIcon(QtPredefinedIcons[icon])

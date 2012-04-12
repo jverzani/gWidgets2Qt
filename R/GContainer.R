@@ -14,7 +14,6 @@ GContainer <- setRefClass("GContainer",
                             },
                             child_bookkeeping=function(child) {
                               "Update parent property of child and children property of parent container"
-                              print(list("bookkeeping", child))
                               if(is(child, "GComponent"))
                                 child$set_parent(.self)
                               children <<- c(children, child)
