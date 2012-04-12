@@ -92,7 +92,7 @@ GNotebook <- setRefClass("GNotebook",
                              callSuper(toolkit)
                            },
                            get_names = function(...) {
-                             n <- length(x)
+                             n <- get_length()
                              if(n > 0)
                                vals <- sapply(1:n, function(i) widget$tabText(i-1))
                              else
@@ -100,7 +100,7 @@ GNotebook <- setRefClass("GNotebook",
                              return(vals)
                            },
                            set_names = function(value, ...) {
-                             n <- length(x)
+                             n <- get_length()
                              if(length(value) != n)
                                stop(gettext("New names for notebook must have proper length"))
                              
@@ -120,17 +120,17 @@ GNotebook <- setRefClass("GNotebook",
                              ## if(close.button)
                              ##   message(gettext("Unable to add close.buttons individually"))
 
-                             if(!is.character(label))
-                               label = svalue(label)     # now a character
+                             label <- paste(label, collapse="\n")
+#                             if(!is.character(label))
+#                               label = svalue(label)     # now a character
 
-                             if(is.null(index))
+                             if(is.null(index) || !is.numeric(index))
                                index <- get_length() + 1
                              index <- min(get_length() + 1, max(1, index))
                              
                              ## add drop motion for labels
-                             
                              ## add at index
-                             widget$insertTab(index-1, qt_child, label)
+                             widget$insertTab(index-1, qt_child, paste(label, collapse="\n"))
 
 
                              if(!is.null(tooltip))
