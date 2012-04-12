@@ -20,6 +20,7 @@ NULL
 
 
 ## toolbar class
+## Oddity: will lower window it is added to.
 GToolBar <- setRefClass("GToolBar",
                         contains="GWidget",
                         fields=list(
@@ -64,12 +65,12 @@ GToolBar <- setRefClass("GToolBar",
                               else
                                 add_widget_toolitem(item)
                             })
-                            widget$show()
+##                            widget$show()
                             toolbar_list <<- gWidgets2:::merge.list(toolbar_list, items)
                           },
                           add_gseparator_toolitem=function(obj) {
                             "Helper to add a separator"
-                            widget$addSeparator(TRUE)
+                            widget$addSeparator()
                           },
                           add_gaction_toolitem=function(obj) {
                             "Helper to add a gaction item"
