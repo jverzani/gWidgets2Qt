@@ -35,7 +35,7 @@ GComponent <- setRefClass("GComponent",
                                  .e="environment"
                                  ),
                                methods=list(
-                                 initialize=function(toolkit=guiToolkit(), ..., expand, fill, anchor, label) {
+                                 initialize=function(toolkit=guiToolkit(), ..., expand, fill, anchor, label, index, align) {
                                    initFields(toolkit=toolkit,
                                               .e=new.env()
                                               )
@@ -205,7 +205,8 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                       ## calls the notify observer
                                       ## method when the widget
                                       ## actualy emits the signal
-                                      add_handler=function(signal, handler, action=NULL, decorator, emitter=.self$handler_widget()) {
+                                      add_handler=function(signal, handler, action=NULL, decorator,
+                                        emitter=.self$handler_widget()) {
                                         "Uses Observable framework for events. Adds observer, then call connect signal method. Override last if done elsewhere"
                                         if(is_handler(handler)) {
                                           o <- gWidgets2:::observer(.self, handler, action)
@@ -236,7 +237,9 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                         
                                         ## only connect once
                                         if(is.null(connected_signals[[signal, exact=TRUE]]))
-                                          qconnect(emitter, signal, handler=f, user.data=.self)
+                                          out <- try(qconnect(emitter, signal, handler=f, user.data=.self), silent=TRUE)
+                                        if(inherits(out, "try-error"))
+                                          message("can't connect signal", signal)
                                         connected_signals[[signal]] <<- TRUE
                                       },
                                       ## initiate a handler (emit signal)
@@ -288,19 +291,19 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                       ## Defind add_handler_EVENT methods
                                       add_handler_keystroke=function(handler, action=NULL, ...) {
                                         "Keystroke handler. Defined for all, but might restrict to only gedit, gtext"
-                                        add_handler("key-release-event", handler, action, .self$key_release_decorator, ...)
+                                        message("XXX no keystroke handler defined for object of class", class(.self))
                                       },                                 
                                       add_handler_clicked = function(handler, action=NULL, ...) {
                                         add_handler("clicked", handler, action, ...)
                                       },
                                       add_handler_button_press=function(handler, action=NULL, ...) {
-                                        add_handler("button-press-event", handler, action, .self$button_press_decorator, ...)
+                                        message("XXX no keystroke handler defined for object of class", class(.self))
                                       },
                                       add_handler_focus=function(handler, action=NULL, ...) {
-                                        add_handler("focus-in-event", handler, action, .self$event_decorator, ...)
+                                        message("XXX no focus handler defined for object of class", class(.self))
                                       },
                                       add_handler_blur=function(handler, action=NULL, ...) {
-                                        add_handler("focus-out-event", handler, action, .self$event_decorator, ...)
+                                        message("XXX no focus out handler defined for object of class", class(.self))
                                       },
                                       ## XXX add stibs for others
                                       ##
