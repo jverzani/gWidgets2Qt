@@ -42,6 +42,9 @@ GLayout <- setRefClass("GLayout",
 
                            callSuper(toolkit)
                          },
+                         add_child=function(...) {
+                           ## XXX does nothing, adding done in [<- side
+                         },
                          set_spacing=function(value) {
                            widget$setSpacing(as.integer(value)) # does both horizontal and vertical
                          },
