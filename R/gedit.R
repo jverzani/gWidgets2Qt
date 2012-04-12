@@ -20,12 +20,11 @@ qsetClass("GQLineEdit", Qt$QLineEdit)
 qsetProperty("obj", GQLineEdit)
 qsetMethod("setObj", GQLineEdit, function(value) this$obj <- value)
 qsetMethod("focusInEvent", GQLineEdit, function(e) {
-#  obj$focus_in()
   obj$notify_observers(signal="focusInEvent")
 })
 qsetMethod("focusOutEvent", GQLineEdit, function(e) {
-#  obj$focus_out()
   obj$notify_observers(signal="focusOutEvent")
+  obj$invoke_change_handler()
 })
 qsetMethod("keyPressEvent", GQLineEdit, function(e) {
 
@@ -202,6 +201,18 @@ GEdit <- setRefClass("GEdit",
                                 validator <<- GQEditValidator()
                                 validator$setFun(FUN)
                                 widget$setValidator(validator)
+                              },
+                              set_invalid=function(value, msg=NULL) {
+                                if(value) {
+                                  ## XXX work on this. 
+                                  ## an error
+                                  if(!is.null(msg))
+                                    warning(msg)
+                                } else {
+                                  ## clear error
+
+                                }
+
                               }
                               ))
 
