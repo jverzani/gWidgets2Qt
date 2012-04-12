@@ -22,6 +22,31 @@ NULL
 }
 
 
+## We subclass to have events for this widget.
+qsetClass("GQTextEdit", Qt$QTextEdit)
+qsetProperty("obj", GQTextEdit)
+qsetMethod("setObj", GQTextEdit, function(value) this$obj <- value)
+qsetMethod("focusInEvent", GQTextEdit, function(e) {
+  obj$notify_observers(signal="focusInEvent")
+})
+qsetMethod("focusOutEvent", GQTextEdit, function(e) {
+  obj$notify_observers(signal="focusOutEvent")
+})
+qsetMethod("keyPressEvent", GQTextEdit, function(e) {
+
+  mods <- e$modifiers()                 # a flag
+  modifiers <- character(0)
+  if(mods & Qt$Qt$ShiftModifier) modifiers <- c(modifiers, "Shift")
+  if(mods & Qt$Qt$ControlModifier) modifiers <- c(modifiers, "Ctrl")
+  if(mods & Qt$Qt$MetaModifier) modifiers <- c(modifiers, "Meta")
+  if(mods & Qt$Qt$AltModifier) modifiers <- c(modifiers, "Alt")
+
+  
+  obj$notify_observers(signal="keyPressEvent", Key=e$key(), key=e$text(), modifier=mods)
+  super("keyPressEvent", e)
+  
+})
+
 GText <- setRefClass("GText",
                      contains="GWidget",
                      fields=list(
@@ -34,7 +59,9 @@ GText <- setRefClass("GText",
                          font.attr = NULL, wrap = TRUE,
                          handler=NULL, action=NULL, container=NULL, ...) {
 
-                         widget <<- Qt$QTextEdit()
+                         widget <<- GQTextEdit()
+                         widget$setObj(.self)
+                         
                          initFields(block=widget,
                                     change_signal="textChanged"
                                     )
@@ -139,9 +166,21 @@ GText <- setRefClass("GText",
                            widget$setTextCursor(tc)
                          }
                        },
-                       add_handler_changed=function(handler, action=NULL, ...) {
-                         add_handler_keystroke(handler, action=action, ...)
+                       connect_to_toolkit_signal=function(...) {}, # override
+                       add_handler_changed=function(handler, action, ...) {
+                         add_handler_keystroke(handler, action, ...)
+                       },
+                       add_handler_keystroke=function(handler, action, ...) {
+                         add_handler("keyPressEvent", handler, action, ...)
+                       },
+                       add_handler_focus=function(handler, action, ...) {
+                         add_handler("focusInEvent", handler, action, ...)
+                       },
+                       add_handler_blur=function(handler, action, ...) {
+                         add_handler("focusOutEvent", handler, action, ...)
                        }
+
+                       
                        ))
 
 
