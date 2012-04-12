@@ -52,6 +52,10 @@ GComponent <- setRefClass("GComponent",
                                  set_visible = function(value) widget$setVisible(as.logical(value)),
                                  get_enabled = function() widget$enabled,
                                  set_enabled = function(value) widget$setEnabled(as.logical(value)),
+                                 get_focus = function() widget$focus,
+                                 set_focus = function(value) {
+                                   if(value) widget$setFocus(Qt$Qt$OtherFocusReason)
+                                 },
                                  set_font = function(value) {
                                    message("XXX")
                                  },
