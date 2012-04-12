@@ -169,9 +169,16 @@ GEdit <- setRefClass("GEdit",
                               },
 
                               ## Handlers
-                              add_handler_keypress=function(handler, action=NULL, ...) {
+                              add_handler_keystroke=function(handler, action=NULL, ...) {
                                 add_handler("keyPressEvent", handler, action, ...)
                               },
+                              add_handler_focus=function(handler, action, ...) {
+                                add_handler("focusInEvent", handler, action, ...)
+                              },
+                              add_handler_blur=function(handler, action, ...) {
+                                add_handler("focusOutEvent", handler, action, ...)
+                              },
+                              
                               ## Handler: changed -> clicked
                               ## add_handler_changed = function(handler, action=NULL, ...) {
                               ##   if(missing(handler) || is.null(handler))
