@@ -77,6 +77,7 @@ GComponent <- setRefClass("GComponent",
                                    tmp <- .e
                                    attr(tmp, key) <- value
                                  },
+                                 set_invalid=function(value, msg) {},
                                  ##
                                  set_parent = function(parent) parent <<- parent,
                                  add_to_parent = function(parent, child, expand=NULL, fill=NULL, anchor=NULL, ...) {
