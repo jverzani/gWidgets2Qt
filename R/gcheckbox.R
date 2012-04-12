@@ -98,7 +98,7 @@ GToggleButton <- setRefClass("GToggleButton",
                                  container = NULL, ... ) {
 
 
-                                 widget <<- Qt$QToolButton()
+                                 widget <<- Qt$QPushButton()
                                  widget$setCheckable(TRUE)
 
                                  set_items(value=text)
