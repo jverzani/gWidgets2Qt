@@ -1,5 +1,6 @@
 drag-and-drop (framework!)
 popup menus
+Use ByteCompile: true in DESCRIPTION (too slow to compile for development)
 
 ## General
  fonts (styles, fonts objects)
