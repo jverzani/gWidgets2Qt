@@ -19,14 +19,14 @@ NULL
                                          handler = NULL, action = NULL,
                                          container = NULL, ... ) {
   GTable$new(toolkit,
-           items=items,
-           multiple=multiple,
-           chosen.col=chosen.col,
-           icon.col = icon.col,
-           tooltip.col = tooltip.col,
-           handler=handler,
+             items=items,
+             multiple=multiple,
+             chosen.col=chosen.col,
+             icon.col = icon.col,
+             tooltip.col = tooltip.col,
+             handler=handler,
              action=action,
-           container=container ,...)
+             container=container ,...)
 }
 
 ##' Class for gtable widget
@@ -115,6 +115,7 @@ GTable <- setRefClass("GTable",
                           idx <- get_index()
                           values <- get_items(drop=FALSE)
 
+                          drop <- ifelse(is.null(drop), TRUE, drop)
                           if(drop)
                             values[idx, chosen_col, drop=TRUE]
                           else
@@ -161,14 +162,9 @@ GTable <- setRefClass("GTable",
                           base:::dim(values)
                         },
                         get_visible=function() {
-                          print(1)
-                          print(widget$model())
                           m <- get_dim()[1]
-                          print(2)
                           print(widget$model())
                           if(m >= 1) {
-                            print(3)
-                            print(widget$model())
                             !sapply(seq_len(m) - 1L, widget$isRowHidden)
                           } else {
                             logical(0)
@@ -267,6 +263,7 @@ GTable <- setRefClass("GTable",
                           qdataFrame(model)$.toolTip <- tooltips
                         },
                         ## Popup menu
+                        ## XXX THis isn't working yet
                         default_popup_menu=function(col_index) {
                           "Provide default popup menu (passed to gmenu(..., popup=TRUE))"
                           actions <- list(sort_increasing=
@@ -333,10 +330,10 @@ GTable <- setRefClass("GTable",
                           add_handler("selectionChanged", handler, action=action, decorator=decorator,
                                       emitter=widget$selectionModel())
                         },
-                        add_handler_clicked=function(handler, action, ...) {
+                        add_handler_clicked=function(handler, action=NULL, ...) {
                           add_handler_changed(handler, action=action, ...)
                         },
-                        add_handler_double_clicked=function(handler, action, ...) {
+                        add_handler_double_clicked=function(handler, action=NULL, ...) {
                          add_handler("doubleClicked", handler, action, ...)
                         }
                     
