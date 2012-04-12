@@ -81,14 +81,24 @@ GBoxContainer <- setRefClass("GBoxContainer",
 
                                  sw
                                },
-                               ## svalue (borderwidth, spacing -- which is it...)
+                               ## svalue (spacing is between child space, not borderwidth)
                                get_value=function(...) {
                                  widget$spacing
                                },
                                set_value=function(value, ...) {
                                  widget$setSpacing(as.integer(value))
                                },
-                             
+                               set_borderwidth=function(value, ...) {
+                                 "Set border width (contentsmargin). Typical them is 11 pixels apiece"
+                                 ## value can be up to 4 components: left, top, right, bottom
+                                 if(length(value) == 1) 
+                                   value[2:4] <- value[1]
+                                 else if(length(value) == 2)
+                                   value[3:4] <- value[1:2]
+                                 else if(length(value) == 3)
+                                   value[4] <- value[2]
+                                 widget$setContentsMargins(value[1], value[2], value[3], value[4])
+                               },
                                ## layout
                                create_fill = function(fill) {
                                  "Compute fill, takes into account direction of packing unless overridden"
