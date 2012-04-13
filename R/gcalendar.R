@@ -68,10 +68,7 @@ GCalendar <- setRefClass("GCalendar",
                              handler, action, container, ...) {
 
 
-                             
-                             if(text == "" && format != "")
-                               text = format(Sys.Date(), format)
-                             text = as.character(text)
+                           
 
                              initFields(widget=Qt$QLineEdit(),
                                         block=Qt$QWidget(),
@@ -92,17 +89,15 @@ GCalendar <- setRefClass("GCalendar",
                              ## put cal into a dialog
                              cal <- DateDialog()
 
-
-
-                             ## set date if possible
-                             day <- try(as.Date(text), silent=TRUE)
-                             if(!inherits(day, "try-error")) {
+                             
+                             day <- as.Date(text, format=format)
+                             if(!is.na(day)) {  
+                               widget$setText(as.character(day))
                                yr <- as.integer(format(day,"%Y"))
                                mo <- as.integer(format(day,"%m"))
                                dy <- as.integer(format(day,"%d"))
                                cal$setSelectedDate(Qt$QDate(yr, mo, dy))
                              }
-                             
                              
                              ## add handler to btn
                              qconnect(btn, "clicked", function() {
@@ -126,13 +121,15 @@ GCalendar <- setRefClass("GCalendar",
                              dy <- date$day()
                              base:::format(paste(c(yr, mo, dy), collapse="-"), format=format)
                            },
-                           get_value=function( ...) {
+                           get_value=function(drop=TRUE,  ...) {
                              val <- widget$text
-                             cur_date <- try(as.Date(val, format=format))
-                             if(inherits(cur_date,"try-error"))
-                               val <- NA
+                             cur_date <- try(as.Date(val, format="%Y-%m-%d"))
+                             if(is.na(cur_date)) 
+                               cur_date <- as.Date(NA)
+                             if(missing(drop) || is.null(drop) || drop)
+                               format(cur_date, format=format)
                              else
-                               val <- as.character(cur_date)
+                               cur_date
                            },
                            set_value=function(value, ...) {
                              widget$setText(value)
