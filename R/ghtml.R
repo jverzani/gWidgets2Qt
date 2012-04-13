@@ -6,6 +6,8 @@ NULL
 ##'
 ##' @export
 ##' @rdname gWidgets2Qt-undocumented
+##' @method .ghtml guiWidgetsToolkitQt
+##' @S3method .ghtml guiWidgetsToolkitQt
 .ghtml.guiWidgetsToolkitQt <- function(toolkit, x, container, ...) {
     GHtml$new(toolkit, x, container, ...)
 }
