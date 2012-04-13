@@ -19,12 +19,17 @@ NULL
 
 GStatusBar <- setRefClass("GStatusBar",
                           contains="GContainer",
+                          fields=list(
+                            msg="character"
+                            ),
                           methods=list(
                             initialize=function(toolkit=NULL,
                               text="", container=NULL, ...) {
                               
                               widget <<- Qt$QStatusBar()
-                              block <<- widget
+
+                              initFields(block = widget,
+                                         msg="")
                               
                               set_value(text)
 
@@ -36,12 +41,14 @@ GStatusBar <- setRefClass("GStatusBar",
 
                               callSuper(toolkit)
                               },
-                              get_value=function( ...) {
-                                widget$getLabel()
+                              get_value=function(...) {
+                                msg
                               },
-                              set_value=function(value, ...) {
+                              set_value=function(value, ..., timeout=0L) {
+                                "Show message. Can make transient by passing timeout=secs (0L for permanent)"
                                  widget$clearMessage()
-                                 widget$showMessage(paste(value, collapse="; "))
+                                 msg <<- paste(value, collapse="; ")
+                                 widget$showMessage(msg, as.integer(timeout)*1000) # ms for widget, sec for interface
                               },
                             add_child=function(child, expand=FALSE, fill=NULL, anchor=NULL, ...) {
 
