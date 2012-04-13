@@ -23,7 +23,6 @@ NULL
 ##' Base Class. We have
 ##' GComponent as parent for GContainer and GWidget.
 ##' Here we place QObject and QWidget values, although separating might be better
-##' @importClassesFrom gWidgets2 BasicToolkitInterface
 GComponent <- setRefClass("GComponent",
                                contains="BasicToolkitInterface",
                                fields=list(
@@ -81,7 +80,6 @@ GComponent <- setRefClass("GComponent",
                                    tmp <- .e
                                    attr(tmp, key) <- value
                                  },
-                                 set_invalid=function(value, msg) {},
                                  ##
                                  set_parent = function(parent) parent <<- parent,
                                  add_to_parent = function(parent, child, expand=NULL, fill=NULL, anchor=NULL, ...) {
