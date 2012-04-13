@@ -4,8 +4,11 @@ NULL
 
 ##' toolkit constructor for ggroup
 ##'
+##' @inheritParams gWidgets2::ggroup
 ##' @export
 ##' @rdname gWidgetsQt-undocumented
+##' @method .ggroup guiWidgetsToolkitQt
+##' @S3method .ggroup guiWidgetsToolkitQt
 .ggroup.guiWidgetsToolkitQt <- function(toolkit, horizontal=TRUE, spacing=5, use.scrollwindow=FALSE, container=NULL, ...) {
   GGroup$new(toolkit, horizontal, spacing=spacing, use.scrollwindow=use.scrollwindow, container, ...)
 }
