@@ -2,7 +2,7 @@
 \alias{getWidget.RQtObject}
 \title{method for stopping getWidget}
 \usage{
-  getWidget.RQtObject(obj)
+  \method{getWidget}{RQtObject} (obj)
 }
 \arguments{
   \item{obj}{an RQtObject}

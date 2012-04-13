@@ -40,6 +40,7 @@
 \alias{.gtoolbar.guiWidgetsToolkitQt}
 \alias{.gtree.guiWidgetsToolkitQt}
 \alias{.gvarbrowser.guiWidgetsToolkitQt}
+\alias{.gwindow.guiWidgetsToolkitQt}
 \alias{.stockIconFromObject.guiWidgetsToolkitQt}
 \alias{addToStockIcons}
 \title{add stock icons}
@@ -58,36 +59,17 @@
   \method{.stockIconFromObject}{guiWidgetsToolkitQt}
     (toolkit, obj, ...)
 
-  .gbutton.guiWidgetsToolkitQt(toolkit, text, handler,
-    action, container, ...)
-
-  \method{.gframe}{guiWidgetsToolkitQt} (toolkit, text,
-    markup, pos, horizontal = TRUE, spacing = 5,
-    container = NULL, ...)
-
-  .glabel.guiWidgetsToolkitQt(toolkit, text = "",
-    markup = FALSE, editable = FALSE, handler = NULL,
-    action = NULL, container = NULL, ...)
-
-  \method{.gexpandgroup}{guiWidgetsToolkitQt} (toolkit,
-    text, markup, horizontal = TRUE, handler = NULL,
-    action = NULL, container = NULL, ...)
-
-  \method{.glayout}{guiWidgetsToolkitQt} (toolkit,
-    homogeneous = FALSE, spacing = 10, container = NULL,
+  \method{.gwindow}{guiWidgetsToolkitQt} (toolkit, title,
+    visible, name, width, height, parent, handler, action,
     ...)
 
-  \method{.gpanedgroup}{guiWidgetsToolkitQt} (toolkit,
-    horizontal = TRUE, container = NULL, ...)
+  \method{.gaction}{guiWidgetsToolkitQt} (toolkit, label,
+    tooltip = NULL, icon = NULL, key.accel = NULL,
+    handler = NULL, action = NULL, parent = NULL, ...)
 
-  \method{.gnotebook}{guiWidgetsToolkitQt} (toolkit,
-    tab.pos = 3, container = NULL, ...)
-
-  \method{.gstackwidget}{guiWidgetsToolkitQt} (toolkit,
-    container = NULL, ...)
-
-  \method{.gformlayout}{guiWidgetsToolkitQt} (toolkit,
-    align = "left", spacing = 5, container = NULL, ...)
+  \method{.gcalendar}{guiWidgetsToolkitQt} (toolkit,
+    text = "", format = "\%Y-\%m-\%d", handler = NULL,
+    action = NULL, container = NULL, ...)
 
   \method{.gcheckbox}{guiWidgetsToolkitQt} (toolkit, text,
     checked = FALSE, use.togglebutton = FALSE,
@@ -99,33 +81,18 @@
     horizontal = FALSE, use.table = FALSE, handler = NULL,
     action = NULL, container = NULL, ...)
 
-  \method{.gradio}{guiWidgetsToolkitQt} (toolkit, items,
-    selected = 1, horizontal = FALSE, handler = NULL,
-    action = NULL, container = NULL, ..., parent = NULL)
-
-  \method{.gslider}{guiWidgetsToolkitQt} (toolkit,
-    from = 0, to = 100, by = 1, value = from,
-    horizontal = TRUE, handler = NULL, action = NULL,
-    container = NULL, ...)
-
-  \method{.gspinbutton}{guiWidgetsToolkitQt} (toolkit,
-    from = 0, to = 10, by = 1, value = from, digits = 0,
+  \method{.gcombobox}{guiWidgetsToolkitQt} (toolkit, items,
+    selected = 1, editable = FALSE, coerce.with = NULL,
     handler = NULL, action = NULL, container = NULL, ...)
 
-  \method{.gstatusbar}{guiWidgetsToolkitQt} (toolkit,
-    text = "", container = NULL, ...)
+  \method{.gtable}{guiWidgetsToolkitQt} (toolkit, items,
+    multiple = FALSE, chosen.col = 1, icon.col = NULL,
+    tooltip.col = NULL, handler = NULL, action = NULL,
+    container = NULL, ...)
 
-  \method{.gseparator}{guiWidgetsToolkitQt} (toolkit,
-    horizontal = TRUE, container = NULL, ...)
-
-  \method{.gedit}{guiWidgetsToolkitQt} (toolkit, text = "",
-    width = 25, coerce.with = NULL,
-    initial.msg = initial.msg, handler = NULL,
-    action = NULL, container = NULL, ...)
-
-  \method{.gaction}{guiWidgetsToolkitQt} (toolkit, label,
-    tooltip = NULL, icon = NULL, key.accel = NULL,
-    handler = NULL, action = NULL, parent = NULL, ...)
+  \method{.gmenu}{guiWidgetsToolkitQt} (toolkit,
+    menu.list = list(), popup = FALSE, container = NULL,
+    ...)
 
   \method{.gmessage}{guiWidgetsToolkitQt} (toolkit, msg,
     title = "message",
@@ -149,6 +116,15 @@
   \method{.galert}{guiWidgetsToolkitQt} (toolkit, msg,
     title = "message", delay = 3, parent = NULL, ...)
 
+  \method{.gdf}{guiWidgetsToolkitQt} (toolkit,
+    items = NULL, handler = NULL, action = NULL,
+    container = NULL, ...)
+
+  \method{.gedit}{guiWidgetsToolkitQt} (toolkit, text = "",
+    width = 25, coerce.with = NULL,
+    initial.msg = initial.msg, handler = NULL,
+    action = NULL, container = NULL, ...)
+
   \method{.gfile}{guiWidgetsToolkitQt} (toolkit, text = "",
     type = c("open", "save", "selectdir"),
     initial.filename = NULL,
@@ -160,41 +136,65 @@
     initial.filename = NULL, filter = list(), quote = TRUE,
     handler = NULL, action = NULL, container = NULL, ...)
 
+  \method{.gformlayout}{guiWidgetsToolkitQt} (toolkit,
+    align = "left", spacing = 5, container = NULL, ...)
+
   \method{.ggraphics}{guiWidgetsToolkitQt} (toolkit,
     width = dpi * 6, height = dpi * 6, dpi = 75, ps = 12,
     handler = NULL, action = NULL, container = NULL, ...)
 
-  \method{.gcalendar}{guiWidgetsToolkitQt} (toolkit,
-    text = "", format = "\%Y-\%m-\%d", handler = NULL,
-    action = NULL, container = NULL, ...)
-
-  \method{.gtimer}{guiWidgetsToolkitQt} (toolkit, ms, FUN,
-    data = NULL, one.shot = FALSE, start = TRUE)
-
-  \method{.gcombobox}{guiWidgetsToolkitQt} (toolkit, items,
-    selected = 1, editable = FALSE, coerce.with = NULL,
-    handler = NULL, action = NULL, container = NULL, ...)
+  \method{.ghtml}{guiWidgetsToolkitQt} (toolkit, x,
+    container, ...)
 
   \method{.gimage}{guiWidgetsToolkitQt} (toolkit,
     filename = "", dirname = "", stock.id = NULL,
     size = "", handler = NULL, action = NULL,
     container = NULL, ...)
 
-  .ghtml.guiWidgetsToolkitQt(toolkit, x, container, ...)
+  \method{.glayout}{guiWidgetsToolkitQt} (toolkit,
+    homogeneous = FALSE, spacing = 10, container = NULL,
+    ...)
 
-  \method{.gtable}{guiWidgetsToolkitQt} (toolkit, items,
-    multiple = FALSE, chosen.col = 1, icon.col = NULL,
-    tooltip.col = NULL, handler = NULL, action = NULL,
+  \method{.gnotebook}{guiWidgetsToolkitQt} (toolkit,
+    tab.pos = 3, container = NULL, ...)
+
+  \method{.gpanedgroup}{guiWidgetsToolkitQt} (toolkit,
+    horizontal = TRUE, container = NULL, ...)
+
+  \method{.gradio}{guiWidgetsToolkitQt} (toolkit, items,
+    selected = 1, horizontal = FALSE, handler = NULL,
+    action = NULL, container = NULL, ..., parent = NULL)
+
+  \method{.gseparator}{guiWidgetsToolkitQt} (toolkit,
+    horizontal = TRUE, container = NULL, ...)
+
+  \method{.gslider}{guiWidgetsToolkitQt} (toolkit,
+    from = 0, to = 100, by = 1, value = from,
+    horizontal = TRUE, handler = NULL, action = NULL,
     container = NULL, ...)
+
+  \method{.gspinbutton}{guiWidgetsToolkitQt} (toolkit,
+    from = 0, to = 10, by = 1, value = from, digits = 0,
+    handler = NULL, action = NULL, container = NULL, ...)
+
+  \method{.gstackwidget}{guiWidgetsToolkitQt} (toolkit,
+    container = NULL, ...)
+
+  \method{.gstatusbar}{guiWidgetsToolkitQt} (toolkit,
+    text = "", container = NULL, ...)
+
+  \method{.gtext}{guiWidgetsToolkitQt} (toolkit,
+    text = NULL, width = NULL, height = 300,
+    font.attr = NULL, wrap = TRUE, handler = NULL,
+    action = NULL, container = NULL, ...)
+
+  \method{.gtimer}{guiWidgetsToolkitQt} (toolkit, ms, FUN,
+    data = NULL, one.shot = FALSE, start = TRUE)
 
   \method{.gtoolbar}{guiWidgetsToolkitQt} (toolkit,
     toolbar.list = list(),
     style = c("both", "icons", "text", "both-horiz"),
     container = NULL, ...)
-
-  \method{.gmenu}{guiWidgetsToolkitQt} (toolkit,
-    menu.list = list(), popup = FALSE, container = NULL,
-    ...)
 
   \method{.gtree}{guiWidgetsToolkitQt} (toolkit,
     offspring = NULL, offspring.data = NULL,
@@ -206,27 +206,31 @@
     handler = NULL, action = "summary", container = NULL,
     ...)
 
-  \method{.gtext}{guiWidgetsToolkitQt} (toolkit,
-    text = NULL, width = NULL, height = 300,
-    font.attr = NULL, wrap = TRUE, handler = NULL,
-    action = NULL, container = NULL, ...)
+  \method{.gbutton}{guiWidgetsToolkitQt} (toolkit, text,
+    handler, action, container, ...)
 
-  \method{.gdf}{guiWidgetsToolkitQt} (toolkit,
-    items = NULL, handler = NULL, action = NULL,
+  \method{.glabel}{guiWidgetsToolkitQt} (toolkit,
+    text = "", markup = FALSE, editable = FALSE,
+    handler = NULL, action = NULL, container = NULL, ...)
+
+  \method{.gframe}{guiWidgetsToolkitQt} (toolkit, text,
+    markup, pos, horizontal = TRUE, spacing = 5,
     container = NULL, ...)
+
+  \method{.gexpandgroup}{guiWidgetsToolkitQt} (toolkit,
+    text, markup, horizontal = TRUE, handler = NULL,
+    action = NULL, container = NULL, ...)
 }
 \arguments{
   \item{name}{name of icon}
 
   \item{obj}{R object to get icon from}
 
-  \item{digits}{digits}
+  \item{delay}{delay}
 
   \item{initial.msg}{If this is given and \code{text} is
   not, then an initial message is written to prompt the
   user.}
-
-  \item{delay}{delay}
 
   \item{width}{width of device (pixels)}
 
@@ -235,6 +239,8 @@
   \item{dpi}{dots per inch}
 
   \item{ps}{pointsize}
+
+  \item{digits}{digits}
 
   \item{toolkit}{used to dispatch into toolkit if a
   separate implementation is made}
@@ -245,46 +251,46 @@
 
   \item{...}{ignored}
 
-  \item{text}{frame label}
+  \item{title}{title for window's title bar. This is the
+  main property and is accessed via \code{svalue} or
+  \code{svalue<-}.}
 
-  \item{container}{A parent container. When a widget is
-  created it can be incorporated into the widget heirarchy
-  by passing in a parent container at construction time.
-  (For some toolkits this is not optional, e.g.
-  \pkg{gWidgets2tcltk} or \pkg{gWidgets2WWW2}.)}
+  \item{visible}{logical. If code{TRUE} window is drawn
+  when constructed. Otherwise, window can be drawn later
+  using \code{visible<-}. This value can default to
+  \code{FALSE} by setting the option:
+  \code{options("gWidgets:gwindow-default-visible-is-false"=TRUE)}.
+  There are advantages: windows can draw slowly when adding
+  many items. With \pkg{gWidgets2RGtk2}, the
+  \code{ggraphics} widget can like to be added to an
+  undrawn widget as this avoids sizing issue.}
 
-  \item{markup}{does label use markup (toolkit specific)}
+  \item{parent}{If non-NULL, can be used to suggest default
+  location of window. The argument name was changed from
+  location to parent. This can be a coordinate pair (x,y)
+  with (0,0) the upper left corner, or a gwindow instance.
+  In the latter case the location is suggested by the
+  location of the current window. This is useful for
+  placing dialogs near the parent window.}
 
-  \item{pos}{position of label: 0=left, 1=right, some
-  toolkit allow values in between}
+  \item{handler}{handler for destroy event}
 
-  \item{horizontal}{logical. If TRUE, left to right layout,
-  otherwise top to bottom}
+  \item{action}{action passed t handler}
 
-  \item{spacing}{spacing aroud widget}
+  \item{label}{label for action}
 
-  \item{homogeneous}{are cells all the same size}
+  \item{tooltip}{toolktip for actin}
 
-  \item{handler}{A handler assigned to the default change
-  signal. Handlers are called when some event triggers a
-  widget to emit a signal. For each widget some default
-  signal is assumed, and handlers may be assigned to that
-  through \code{addHandlerChanged} or at construction time.
-  Handlers are functions whose first argument, \code{h} in
-  the documentation, is a list with atleast two components
-  \code{obj}, referring to the object emitting the signal
-  and \code{action}, which passes in user-specified data to
-  parameterize the function call.}
+  \item{icon}{icon (stock icon name) for icon}
 
-  \item{action}{User supplied data passed to the handler
-  when it is called}
+  \item{key.accel}{keyboard accelerator. If given, parent
+  must be specified.}
 
-  \item{tab.pos}{integer. Position of tabs, 1 on bottom, 2
-  left, 3 top, 4 right. (If supported)}
+  \item{text}{initial text}
 
-  \item{align}{alignment of label. Left justify or center
-  balance. Leave as "default" for underlying toolkit
-  default.}
+  \item{format}{Date format}
+
+  \item{container}{parent container}
 
   \item{checked}{is button selected}
 
@@ -296,38 +302,44 @@
 
   \item{items}{checkbox labels}
 
+  \item{horizontal}{logical. If true displayed
+  horizontally, else vertically}
+
   \item{use.table}{logical. If supported, and \code{TRUE}
   then uses a table widget with scrollbars}
 
-  \item{selected}{index of initially selected item}
+  \item{selected}{integer. Which item (by index) is
+  selected. Use -1 for no selection}
 
-  \item{from}{If a number of length one then a starting
-  point, in which case to, by are passed to \code{seq}.
-  Otherwise a sequence of values for which
-  sort(unique(from)) will order}
+  \item{editable}{logical. Is user allowed to edit value}
 
-  \item{to}{ending point when from is starting point}
+  \item{coerce.with}{A function of function name to be
+  called before selected value is returned by
+  \code{svalue}}
 
-  \item{by}{step size if not specified by \code{from}}
+  \item{multiple}{logical allow multiple selectino}
 
-  \item{editable}{If TRUE, then clicking on label will
-  enable editing of value}
+  \item{chosen.col}{which value from the row is returned by
+  selection}
 
-  \item{parent}{parent window. Needed if keyboard
-  accelerator used.}
+  \item{icon.col}{NULL or integer. If latter, specifies
+  column containing stock icon}
 
-  \item{label}{label for action}
+  \item{tooltip.col}{NULL or integer. If latter, specifies
+  column containing tooltip}
 
-  \item{tooltip}{toolktip for actin}
+  \item{menu.list}{A list defining the menu structure.
+  Named sub lists determine the submenu titles and
+  structure. The list may have components of class:
+  \code{GAction}, mapped to a button; \code{GSeparator},
+  mapped to a horizontal separator; \code{GRadio}, mapped
+  to linked buttons; or \code{GCheckbox}, mapped to a
+  checkbox button.}
 
-  \item{icon}{icon (stock icon name) for icon}
-
-  \item{key.accel}{keyboard accelerator. If given, parent
-  must be specified.}
+  \item{popup}{logical. If true, make a popup window to be
+  added through a handler call}
 
   \item{msg}{Character. Message to display.}
-
-  \item{title}{Character. Title of window}
 
   \item{do.buttons}{FALSE to suppress buttons when no
   parent}
@@ -349,7 +361,51 @@
 
   \item{quote}{quote output}
 
-  \item{format}{Date format}
+  \item{align}{alignment of label. Left justify or center
+  balance. Leave as "default" for underlying toolkit
+  default.}
+
+  \item{spacing}{spacing between columns}
+
+  \item{filename}{basename of file}
+
+  \item{dirname}{dirname of file}
+
+  \item{stock.id}{stock id of icon (if non NULL)}
+
+  \item{size}{size of icon when a stock id (toolkit
+  dependent)}
+
+  \item{homogeneous}{are cells all the same size}
+
+  \item{tab.pos}{integer. Position of tabs, 1 on bottom, 2
+  left, 3 top, 4 right. (If supported)}
+
+  \item{from}{If a number of length one then a starting
+  point, in which case to, by are passed to \code{seq}.
+  Otherwise a sequence of values for which
+  sort(unique(from)) will order}
+
+  \item{to}{ending point when from is starting point}
+
+  \item{by}{step size if not specified by \code{from}}
+
+  \item{markup}{logical. If toolkit supports markup, this
+  indicates it will be used}
+
+  \item{font.attr}{font attributes for text buffer. One can
+  also specify font attributes for insertion. The font
+  attributes are specified with a named vector or list,
+  with names and values coming from: \describe{
+  \item{weight}{ in c("light", "normal", "bold", "heavy")}
+  \item{style}{inc("normal", "oblique", "italic")}
+  \item{family}{in c("sans", "helvetica", "times",
+  "monospace")} \item{size}{in c("xx-small", "x-small",
+  "small", "medium", "large", "x-large", "xx-large")}
+  \item{foreground}{a value in colors()}
+  \item{background}{a value in colors()} }}
+
+  \item{wrap}{logical do lines wrap}
 
   \item{ms}{interval in milliseconds}
 
@@ -365,30 +421,6 @@
   \code{start_timer} OO method. (Call
   \code{obj$start_time()}).}
 
-  \item{coerce.with}{A function of function name to be
-  called before selected value is returned by
-  \code{svalue}}
-
-  \item{filename}{basename of file}
-
-  \item{dirname}{dirname of file}
-
-  \item{stock.id}{stock id of icon (if non NULL)}
-
-  \item{size}{size of icon when a stock id (toolkit
-  dependent)}
-
-  \item{multiple}{logical allow multiple selectino}
-
-  \item{chosen.col}{which value from the row is returned by
-  selection}
-
-  \item{icon.col}{NULL or integer. If latter, specifies
-  column containing stock icon}
-
-  \item{tooltip.col}{NULL or integer. If latter, specifies
-  column containing tooltip}
-
   \item{toolbar.list}{list. A one-level list of
   \code{gaction} items, \code{gseparator} items or possibly
   other widgets. In the latter cases the \code{container}
@@ -396,17 +428,6 @@
   out with gWidgetstcltk)}
 
   \item{style}{style for icon or text.}
-
-  \item{menu.list}{A list defining the menu structure.
-  Named sub lists determine the submenu titles and
-  structure. The list may have components of class:
-  \code{GAction}, mapped to a button; \code{GSeparator},
-  mapped to a horizontal separator; \code{GRadio}, mapped
-  to linked buttons; or \code{GCheckbox}, mapped to a
-  checkbox button.}
-
-  \item{popup}{logical. If true, make a popup window to be
-  added through a handler call}
 
   \item{x}{Data frame. Optional, if given specify INDICES
   value to split data into heirarchical data structure}
@@ -425,19 +446,8 @@
   column containing logical values indicating if a row has
   offspring.}
 
-  \item{font.attr}{font attributes for text buffer. One can
-  also specify font attributes for insertion. The font
-  attributes are specified with a named vector or list,
-  with names and values coming from: \describe{
-  \item{weight}{ in c("light", "normal", "bold", "heavy")}
-  \item{style}{inc("normal", "oblique", "italic")}
-  \item{family}{in c("sans", "helvetica", "times",
-  "monospace")} \item{size}{in c("xx-small", "x-small",
-  "small", "medium", "large", "x-large", "xx-large")}
-  \item{foreground}{a value in colors()}
-  \item{background}{a value in colors()} }}
-
-  \item{wrap}{logical do lines wrap}
+  \item{pos}{position of label: 0=left, 1=right, some
+  toolkit allow values in between}
 }
 \value{
   NULL
@@ -455,19 +465,7 @@
 
   return stock id from object
 
-  Toolkit button constructor
-
-  gframe constructor
-
-  Toolkit label constructor
-
-  toolkit constructor
-
-  Toolkit constructor
-
-  Toolkit constructor
-
-  Toolkit constructor
+  toolkit constructor for gwindow
 
   Toolkit constructor
 
@@ -480,14 +478,6 @@
   Toolkit constructor
 
   Toolkit constructor
-
-  Toolkit XXX constructor
-
-  Toolkit constructor
-
-  Toolkit constructor
-
-  Toolkit gedit constructor
 
   Toolkit constructor
 
@@ -501,15 +491,13 @@
 
   toolkit implementation of galert
 
+  Toolkit constructor
+
+  Toolkit gedit constructor
+
   Toolkit implementation
 
   Toolkit constructor
-
-  Toolkit constructor
-
-  Toolkit constructor
-
-  S3 method for gtimer
 
   Toolkit constructor
 
@@ -527,8 +515,36 @@
 
   Toolkit constructor
 
-  toolkit implementation
+  Toolkit constructor
 
   Toolkit constructor
+
+  Toolkit XXX constructor
+
+  Toolkit constructor
+
+  Toolkit constructor
+
+  toolkit implementation
+
+  S3 method for gtimer
+
+  Toolkit constructor
+
+  Toolkit constructor
+
+  Toolkit constructor
+
+  Toolkit constructor
+
+  Toolkit label constructor
+
+  gframe constructor
+
+  toolkit constructor
+}
+\seealso{
+  The documentation for this is found at
+  \code{\link{gbutton}}.
 }
 

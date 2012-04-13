@@ -1,12 +1,12 @@
-\name{GTimer}
+\name{GTable}
 \alias{GTable}
 \alias{GTimer}
-\title{Timer class for gWidgets.}
+\title{Class for gtable widget}
 \description{
-  The main reference methods \code{GTimer} are
-  \code{start_timer} and \code{stop_timer}
-
   This \code{GTable} class for Qt implements a few
   additional reference methods:
+
+  The main reference methods \code{GTimer} are
+  \code{start_timer} and \code{stop_timer}
 }
 

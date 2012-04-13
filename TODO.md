@@ -30,8 +30,8 @@ DONE gbutton.R
 DONE  gcalendar.R
 DONISH	gcheckbox.R (TOGGLE BUTTON)
 DONE gcheckboxgroup.R 
-DONE gcombobox.R
-gdf.R
+gcombobox.R (Revert to no qdataFrame -- issue with editable)
+DONiSH gdf.R (ish)
 gdfnotebook.R
 DONE gedit.R:validation
 DONE gfile.R
@@ -46,7 +46,7 @@ DONE gslider.R
 DONE gspinbutton.R
 DONE gstatusbar.R
 NO WIDGET gsvg.R
-gtable.R (set_names, sort?)
+DONISH gtable.R (set_names, sort?)
 DONE gtext.R
 DONE gtimer.R
 DONE gtoolbar.R
