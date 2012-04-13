@@ -1,5 +1,6 @@
 ## miscellaneous functions
-
+##' @import gWidgets2
+NULL
 
 
 ##' toolkit class for qtbase
