@@ -44,7 +44,8 @@ GButtonGroupWidget <- setRefClass("GButtonGroupWidget",
                                     },
                                     get_items = function(i, ...) {
                                       widgets <- button_group$buttons()
-                                      mapply(qinvoke, widgets, "text")
+                                      out <- mapply(qinvoke, widgets, "text")
+                                      out[i]
                                     },
                                     remove_old_items=function() {
                                       "Clear out old, we are replacing"
@@ -75,11 +76,8 @@ GButtonGroupWidget <- setRefClass("GButtonGroupWidget",
                                     },
                                     ## Handler: changed -> clicked
                                     handler_widget=function() button_group,
-                                    add_handler_changed=function(handler, action=NULL, ...) {
-                                      add_handler_clicked(handler, action, ...)
-                                    },
                                     add_handler_clicked=function(handler, action=NULL, ...) {
-                                      add_handler("buttonReleased", handler, action, ...)
+                                      add_handler_changed(handler, action, ...)
                                     }
                                     ))
 
@@ -100,6 +98,8 @@ GCheckboxGroup <- setRefClass("GCheckboxGroup",
                                     widget <<- Qt$QVBoxLayout()
                                   block <<- Qt$QWidget()
                                   block$setLayout(widget)
+
+                                  change_signal <<- "buttonReleased"
                                   
                                   constructor <<- Qt$QCheckBox
                                   
