@@ -132,7 +132,8 @@ GNotebook <- setRefClass("GNotebook",
                              ## add at index
                              widget$insertTab(index-1, qt_child, paste(label, collapse="\n"))
 
-
+                             set_index(index)
+                             
                              if(!is.null(tooltip))
                                set_tab_tooltip(index, tooltip)
                              
