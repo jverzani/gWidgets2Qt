@@ -44,7 +44,7 @@ GRadioButtons <- setRefClass("GRadioButtons",
                           block$setLayout(widget)
                           
                           constructor <<- Qt$QRadioButton
-                          
+                          change_signal <<- "buttonReleased"
                           button_group <<- Qt$QButtonGroup()
                           button_group$setExclusive(TRUE)
                           
@@ -57,7 +57,7 @@ GRadioButtons <- setRefClass("GRadioButtons",
                           callSuper(toolkit)
 
                         },
-                        get_index=function(...) {
+                        get_index=function(i, ...) {
                           btns <- button_group$buttons()
                           which(sapply(btns, function(i) i$checked))
                         },
@@ -83,8 +83,11 @@ GRadioMenuItems <- setRefClass("GRadioMenuItems",
                                    widget <<- Qt$QActionGroup(getBlock(parent))
                                    widget$setExclusive(TRUE)
                                    
-                                   initFields(block=widget)
+                                   initFields(block=widget,
+                                              change_signal="triggered"
+                                              )
                                    set_items(items)
+                                   set_index(selected)
                                   # add_handler_changed(handler, action)
 
                                  },
@@ -120,9 +123,6 @@ GRadioMenuItems <- setRefClass("GRadioMenuItems",
                                  set_index=function(value, ...) {
                                    sapply(widget$actions(), "qinvoke", "setChecked", FALSE)
                                    widget$actions()[[value]]$setChecked(TRUE)
-                                 },
-                                 add_handler_changed=function(handler, action=NULL, ...) {
-                                   add_handler("triggered", handler, action, ...)
                                  },
                                  set_exclusive=function(value) {
                                    "TRUE for radio buttons, FALSE for checkboxgroup"
