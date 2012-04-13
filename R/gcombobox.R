@@ -76,8 +76,9 @@ GComboBox <- setRefClass("GComboBox",
                              } else {
                                idx <- get_index()
                                if(idx == 0)
-                                 return(NA)
-                               val <- get_items()[idx]
+                                 return(character(0))
+                               item <- widget$model()$item(idx - 1)
+                               val <- item$text()
                              }
                              return(val)
                            },
@@ -96,7 +97,14 @@ GComboBox <- setRefClass("GComboBox",
                              }
                            },
                            get_items = function(i, j, ..., drop=TRUE) {
-                             items <- qdataFrame(widget$model())[,1]
+                             n <- get_length()
+                             if(n == 0) return(character(0))
+                             
+                             model <- widget$model()
+                             items <- sapply(1:n, function(i) {
+                               item <- model$item(i-1)
+                               item$text()
+                             })
                              
                              if(missing(i))
                                return(items)
@@ -107,23 +115,49 @@ GComboBox <- setRefClass("GComboBox",
                              "Set items. Indexing is ignored"
                              items <- items_to_df(value)
                              nc <- ncol(items)
-                             m <- data.frame(x = items[,1], stringsAsFactors=FALSE)
-                             model <- qdataFrameModel(m, useRoles=TRUE)
-                             model$setParent(widget) # avoid premature garbage collection
                              
-                             if(nc >= 2) {
-                               icons <- items[,2]
-                               qdataFrame(model)$.x.decoration <- lapply(lapply(icons, getStockIconByName), as_qicon)
+                             model <- widget$model()
+                             cur_idx <- widget$currentIndex + 1
+
+                             ## set an item, possible value, icon or tooltip
+                             setItem <- function(mi, vi=mi) { # model index, value index
+                               val <- as.character(value[vi,1])
+                               item <- Qt$QStandardItem(val)
+                               if(nc >= 2) {
+                                 icon <- getStockIconByName(value[vi,2])
+                                 print(list(items[vi,2], class(icon), icon))
+                                 if(!is.null(icon))
+                                   ## Why does this give an error?
+                                  if(is(icon, "QIcon"))
+                                    item$setIcon()#icon)
+                                  else if(is(icon, "QtEnum"))
+                                    item$setIcon(Qt$QApplication$style()$standardIcon(icon))
+                               }
+                               if(nc >=3) {
+                                 item$setToolTip(value[vi,3])
+                               }
+
+                               widget$model()$setItem(mi-1, item)
                              }
-                             if(nc >= 3)
-                               qdataFrame(model)$.x.toolTip <- items[,3]
 
-                             ## set if possible
-                             widget$setModel(model)
+                             if(missing(i)) {
+                               ## replace it all
+                               widget$clear()
+                               if(nrow(value) == 0)
+                                 return(x)
 
-#                             if(cur_idx > 0)
-#                               widget$setCurrentIndex(cur_idx-1)
-                             widget$update()
+                               lapply(seq_len(nrow(value)), setItem)
+                               
+                               ## set if possible
+                               if(cur_idx > 0)
+                                 widget$setCurrentIndex(cur_idx-1)
+                               widget$update()
+                             } else {
+                               j <- min(length(i), nrow(value))
+                               for(k in 1:j) {
+                                 setItem(i[k], k)
+                               }
+                             }
                            },
                            get_length = function(...) {
                              cnt <- widget$count
@@ -139,4 +173,3 @@ GComboBox <- setRefClass("GComboBox",
                              add_handler("changed", handler, action=action, ...)
                            }
                            ))
-

@@ -4,7 +4,7 @@ options(guiToolkit="Qt")
 
 f <- list.files(system.file("tests", package="gWidgets2"), full=T)
 f <- Filter(function(x) !grepl("README", x), f)
-f <- Filter(function(x) !grepl("combobox", x), f)
+#f <- Filter(function(x) !grepl("combobox", x), f)
 
 sapply(f, function(i) {
   message("testing ", i)
