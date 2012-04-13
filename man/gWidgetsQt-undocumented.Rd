@@ -2,9 +2,7 @@
 \alias{.ggroup.guiWidgetsToolkitQt}
 \title{toolkit constructor for ggroup}
 \usage{
-  \method{.ggroup}{guiWidgetsToolkitQt} (toolkit,
-    horizontal = TRUE, spacing = 5,
-    use.scrollwindow = FALSE, container = NULL, ...)
+  \method{.ggroup}{guiWidgetsToolkitQt} (toolkit, horizontal = TRUE, spacing = 5, use.scrollwindow = FALSE, container = NULL, ...)
 }
 \arguments{
   \item{toolkit}{Each widget constructor is passed in the
