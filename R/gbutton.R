@@ -3,10 +3,14 @@
 NULL
 
 
-##' Toolkit button constructor
+##' Toolkit  constructor
 ##'
+##' @inheritParams gWidgets2::gbutton
 ##' @export
 ##' @rdname gWidgets2Qt-undocumented
+##' @seealso The documentation for this is found at \code{\link{gbutton}}.
+##' @method .gbutton guiWidgetsToolkitQt
+##' @S3method .gbutton guiWidgetsToolkitQt
 .gbutton.guiWidgetsToolkitQt <- function(toolkit, text,  handler, action, container, ...) {
   if(is(action, "GAction"))
     GButtonAction$new(toolkit, action, container, ...)
@@ -41,9 +45,6 @@ GButton <- setRefClass("GButton",
                               },
                               get_value=function(index=TRUE, drop=TRUE, ...) {
                                 widget$text
-                              },
-                              add_handler_changed=function(handler, action=NULL, ...) {
-                                add_handler_clicked(handler, action=action, ...)
                               }
                               ))
 
@@ -53,7 +54,9 @@ GButtonBase <- setRefClass("GButtonBase",
                          
                          initialize=function(toolkit, text, handler, action, container, ...) {
                            widget <<- Qt$QPushButton()
-                           initFields(block=widget)
+                           initFields(block=widget,
+                                      change_signal="clicked"
+                                      )
                            
                            add_to_parent(container, .self, ...)
                            
