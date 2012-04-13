@@ -2,9 +2,12 @@
 NULL
 
 ##' Toolkit label constructor
-##'
+##' 
+##' @inheritParams gWidgets2::glabel
 ##' @export
 ##' @rdname gWidgets2Qt-undocumented
+##' @method .glabel guiWidgetsToolkitQt
+##' @S3method .glabel guiWidgetsToolkitQt
 .glabel.guiWidgetsToolkitQt <- function(toolkit, text="", markup=FALSE, editable=FALSE,
                                            handler=NULL, action=NULL, container=NULL,
                                            ...) {
@@ -14,7 +17,7 @@ NULL
 
 
 
-##' label class
+## label class
 GLabel <- setRefClass("GLabel",
                             contains="GWidget",
                             fields=list(
