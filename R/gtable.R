@@ -52,7 +52,7 @@ GTable <- setRefClass("GTable",
                                 icon.col = NULL,
                                 tooltip.col=NULL,
                                 handler = NULL, action = NULL,
-                                container = NULL, ... ) {
+                                container = NULL, ..., fill=NULL ) {
 
                                 
                                 ## setup widget
@@ -99,8 +99,11 @@ GTable <- setRefClass("GTable",
                                 
                                 
                                 set_items(items)
-                                
-                                add_to_parent(container, .self, ...)
+
+                                if(is(container, "GBoxContainer") && (missing(fill) || is.null(fill)))
+                                  fill <- "both"
+
+                                add_to_parent(container, .self, ..., fill=fill)
 
                                 handler_id <<- add_handler_changed(handler, action)
                                 
