@@ -90,10 +90,6 @@ QtPredefinedIcons <- c("question"=Qt$QMessageBox$Question,
   
   ret <- mb$exec()
   if(ret == 1024 ) {
-    ## OK, runhandler, return TRUE
-    h <- list(action=action)
-    if(!is.null(handler))
-      handler(h)
     return(TRUE)
   } else {
     ## cancel
@@ -123,8 +119,8 @@ QtPredefinedIcons <- c("question"=Qt$QMessageBox$Question,
   if(is.null(parent))
     parent <- Qt$QWidget()
   
-  out <- Qt$QInputDialog$getText(getBlock(parent), title, msg, NULL, NULL)
-
+  out <- Qt$QInputDialog$getText(getBlock(parent), title, msg, Qt$QLineEdit$Normal, text)
+  
   ## out is NULL or a text
   if(is.null(out))
     out <- character(0)
