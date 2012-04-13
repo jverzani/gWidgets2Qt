@@ -289,7 +289,7 @@ GTree <- setRefClass("GTree",
 
                          ## icon
                          if(!is.null(icon <- getStockIconByName(icon)))
-                           l[[1]]$setIcon(gWidgets2Qt:::as_qicon(icon))
+                           l[[1]]$setIcon(as_qicon(icon))
 
                          ## tooltip
                          if(!is.null(tooltip))
