@@ -1,11 +1,13 @@
 ##' @include GContainer.R
 NULL
 
-
 ##' toolkit constructor for gwindow
 ##'
+##' @inheritParams gWidgets2::gwindow
 ##' @export
-##' @rdname gWidgetsQt-undocumented
+##' @rdname gWidgets2Qt-undocumented
+##' @method .gwindow guiWidgetsToolkitQt
+##' @S3method .gwindow guiWidgetsToolkitQt
 .gwindow.guiWidgetsToolkitQt <- function(toolkit, title, visible, name, width, height, parent, handler, action,  ...) {
   GWindow$new(toolkit, title, visible, name, width, height, parent, handler, action,  ...)
 }
