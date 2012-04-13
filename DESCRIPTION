@@ -9,12 +9,14 @@ Depends:
     qtutils,
     gWidgets2
 Maintainer: John Verzani <jverzani@gmail.com>
-Description: The gWidgets2 API provides a simplified means for GUI development in R. This package uses the qtbase
-    package to provide the interface for the underlying Qt libraries. Qt is a very feature-rich library and qtbase
-    provides nearly all of the functionality to the R programmer. Using qtbase directly can be daunting, though 
-    worth the time if the project is large enough. The gWidgets2 package steps in when rapid development or more modest
-    scope is desired.
-License:  GPL (>= 3)
+Description: The gWidgets2 API provides a simplified means for GUI development
+    in R. This package uses the qtbase package to provide the interface for the
+    underlying Qt libraries. Qt is a very feature-rich library and qtbase
+    provides nearly all of the functionality to the R programmer. Using qtbase
+    directly can be daunting, though worth the time if the project is large
+    enough. The gWidgets2 package steps in when rapid development or more
+    modest scope is desired.
+License: GPL (>= 3)
 LazyLoad: yes
 Collate:
     'misc.R'
@@ -58,3 +60,4 @@ Collate:
     'gtree.R'
     'gvarbrowser.R'
     'gtext.R'
+    'gdf.R'

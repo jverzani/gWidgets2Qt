@@ -9,6 +9,7 @@
 \alias{.gcheckboxgroup.guiWidgetsToolkitQt}
 \alias{.gcombobox.guiWidgetsToolkitQt}
 \alias{.gconfirm.guiWidgetsToolkitQt}
+\alias{.gdf.guiWidgetsToolkitQt}
 \alias{.gedit.guiWidgetsToolkitQt}
 \alias{.getStockIconByName.guiWidgetsToolkitQt}
 \alias{.getStockIcons.guiWidgetsToolkitQt}
@@ -209,6 +210,10 @@
     text = NULL, width = NULL, height = 300,
     font.attr = NULL, wrap = TRUE, handler = NULL,
     action = NULL, container = NULL, ...)
+
+  \method{.gdf}{guiWidgetsToolkitQt} (toolkit,
+    items = NULL, handler = NULL, action = NULL,
+    container = NULL, ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -523,5 +528,7 @@
   Toolkit constructor
 
   toolkit implementation
+
+  Toolkit constructor
 }
 
