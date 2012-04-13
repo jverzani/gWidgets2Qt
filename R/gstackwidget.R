@@ -40,7 +40,8 @@ GStackWidget <- setRefClass("GStackWidget",
                              
                                 ## add at index
                                 widget$insertWidget(index-1, qt_child)
-
+                                set_index(index)
+                                
                                 child_bookkeeping(child)
                               }
                               ))
