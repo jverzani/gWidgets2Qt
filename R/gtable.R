@@ -145,7 +145,7 @@ GTable <- setRefClass("GTable",
                             if(widget$selectionMode == Qt$QAbstractItemView$SingleSelection)
                               sel_model$clearSelection()
                             idx <- get_model()$index(i - 1L, 0L)
-                            sel_model$select(idx,  Qt$QItemSelectionModel$Select)
+                            sel_model$select(idx,  Qt$QItemSelectionModel$Select | Qt$QItemSelectionModel$Rows)
                           })
                         },
                         get_items = function(i, j, ..., drop=TRUE) {
