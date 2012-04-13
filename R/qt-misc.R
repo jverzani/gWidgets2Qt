@@ -7,12 +7,16 @@ NULL
 ##' 
 ##' @param obj an RQtObject
 ##' @export
+##' @method getWidget RQtObject
+##' @S3method getWidget RQtObject
 getWidget.RQtObject <- function(obj) obj
 
 ##' S3 method for stopping getBlock
 ##'
 ##' @param obj an RQtObject
 ##' @export
+##' @method getBlock RQtObject
+##' @S3method getBlock RQtObject
 getBlock.RQtObject <- function(obj) obj
 
 
