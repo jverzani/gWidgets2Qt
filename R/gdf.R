@@ -51,8 +51,11 @@ GDf <- setRefClass("GDf",
                        widget <<- Qt$QTableView()
                        widget$setModel(qmodel)
                        qmodel$setParent(widget)
-                       
-                       
+
+                       ## Michaels text formatting delagate does all the hard work:
+                       delegate <- qrTextFormattingDelegate(view)
+                       widget$setItemDelegate(delegate)
+
                        
                        initFields(block=widget)
 
