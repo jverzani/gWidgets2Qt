@@ -221,6 +221,8 @@ GTable <- setRefClass("GTable",
                             q_model$setParent(widget) # avoids GC
                             set_icons(l$icons)
                             set_tooltips(l$tooltip)
+                          } else {
+                            qdataFrame(q_model)[i,j] <<- value
                           }
                         },
                         extract_pieces=function(items) {
