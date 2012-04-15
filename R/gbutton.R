@@ -52,13 +52,17 @@ GButtonBase <- setRefClass("GButtonBase",
                        contains="GButton",
                        methods=list(
                          
-                         initialize=function(toolkit, text, handler, action, container, ...) {
+                         initialize=function(toolkit, text, handler, action, container, ..., fill=NULL) {
                            widget <<- Qt$QPushButton()
                            initFields(block=widget,
                                       change_signal="clicked"
                                       )
+
+                           ## fill hack
+                           if(is(container, "GBoxContainer") && (missing(fill) || is.null(fill)))
+                             fill <- "x"
                            
-                           add_to_parent(container, .self, ...)
+                           add_to_parent(container, .self, ..., fill=fill)
                            
                            
                            if(!missing(text))
