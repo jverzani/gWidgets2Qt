@@ -1,9 +1,8 @@
-drag-and-drop (framework!)
+drag-and-drop (use handlers, now it is hard coded (gedit, gtable, gvarbrowser ...)!)
 popup menus
-Use ByteCompile: true in DESCRIPTION (too slow to compile for development)
 
 ## General
- fonts (styles, fonts objects)
+fonts (styles, fonts objects)
 DONE GComponent.R
 DONE GContainer.R
 DONE GWidget.R
@@ -33,7 +32,7 @@ DONE gcheckboxgroup.R
 gcombobox.R (Revert to no qdataFrame -- issue with editable)
 DONiSH gdf.R (ish)
 gdfnotebook.R
-DONE gedit.R:validation
+DONE gedit.R: set_invalid needed, validation
 DONE gfile.R
 DONE ghtml.R
 DONE ggraphics.R
@@ -46,7 +45,7 @@ DONE gslider.R
 DONE gspinbutton.R
 DONE gstatusbar.R
 NO WIDGET gsvg.R
-DONISH gtable.R (set_names, sort?)
+DONISH gtable.R (set\_names, sort, popup menu?)
 DONE gtext.R
 DONE gtimer.R
 DONE gtoolbar.R
