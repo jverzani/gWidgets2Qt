@@ -20,20 +20,21 @@ NULL
 
 
 qsetClass("GQStandardItemModel", Qt$QStandardItemModel)
-qsetProperty("view", GQStandardItemModel)
+qsetProperty("obj", GQStandardItemModel)
 
 qsetMethod("mimeData", GQStandardItemModel, function(lst) {
   if(length(lst) == 0)
     super("mimeData", lst)
 
   idx <- lst[[1]]
-  path <- view$path_from_index(idx)$path[-1]
+  path <- obj$path_from_index(idx)$path[-1]
   if(length(path) == 0)
     super("mimeData", lst)
 
   data <- Qt$QMimeData()
+  txt <- obj$notify_observers(signal="drag-source", drag_data=path)[[1]]
   ## Grab from handler$dropdata? This is hard code
-  data$setText(paste(path, collapse="$"))
+  data$setText(txt)
   
   data
 })
@@ -59,7 +60,7 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                 widget <<-  Qt$QTreeView()
 #                                model <- Qt$QStandardItemModel(rows=0, columns=2) # name, summary
                                 model <- GQStandardItemModel(rows=0, columns=2) # name, summary
-                                model$view <- .self
+                                model$obj <- .self
                                 
                                 model$setHorizontalHeaderLabels(gettext("Variable", "Summary"))
                                 widget$setAlternatingRowColors(TRUE)
@@ -68,7 +69,6 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                 ## But how to recover the dragged object?
                                 ## it is in raw format:
                                 ## mime_data$data("application/x-qabstractitemmodeldatalist")
-                                widget$setDragEnabled(TRUE) #
                                 
                                 
                                 widget$setModel(model)
@@ -82,6 +82,13 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                            item_list=list()
                                            )
                                 
+                                ## set up drag source
+                                add_drag_source(function(h,...) {
+                                  path <- h$drag_data
+                                  paste(path, collapse="$")
+                                })
+
+
                                 icon_classes <<- getWithDefault(getOption("gwidgets2:gvarbrowser_classes"),
                                                                gWidgets2:::gvarbrowser_default_classes)
                                 

@@ -308,8 +308,25 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                       add_handler_blur=function(handler, action=NULL, ...) {
                                         message("XXX no focus out handler defined for object of class", class(.self))
                                       },
-                                      ## XXX add stibs for others
-                                      ##
+                                      ## DND
+                                      add_drop_handler=function(handler, action=NULL, ...) {
+                                        "We use drop-target signal. This is not connected to a widget"
+                                        widget$acceptDrops <- TRUE
+                                        if(is_handler(handler)) {
+                                          o <- gWidgets2:::observer(.self, handler, action)
+                                          invisible(add_observer(o, "drop-target"))
+                                        }
+                                      },
+                                      add_drag_source=function(handler, action=NULL, ...) {
+                                        "We use drag-source signal. Not connected to a widget"
+                                        widget$dragEnabled <- TRUE
+                                        if(is_handler(handler)) {
+                                          o <- gWidgets2:::observer(.self, handler, action)
+                                          remove_observers("drag-source") # only 1
+                                          invisible(add_observer(o, "drag-source"))
+                                        }
+                                      },
+                                      ## some more
                                       add_popup_menu = function(mb, action=NULL, ...) {
                                       },
                                       add_3rd_mouse_popup_menu=function(mb, action=NULL, ...) {
