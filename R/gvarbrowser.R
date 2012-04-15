@@ -16,8 +16,27 @@ NULL
 
 ## TODO:
 ## =====
-## * Drag and Drop -- issue with raw data. Might need to do much more work through subclassing
 ## * add in popup menu with common actions: rm, ...
+
+
+qsetClass("GQStandardItemModel", Qt$QStandardItemModel)
+qsetProperty("view", GQStandardItemModel)
+
+qsetMethod("mimeData", GQStandardItemModel, function(lst) {
+  if(length(lst) == 0)
+    super("mimeData", lst)
+
+  idx <- lst[[1]]
+  path <- view$path_from_index(idx)$path[-1]
+  if(length(path) == 0)
+    super("mimeData", lst)
+
+  data <- Qt$QMimeData()
+  ## Grab from handler$dropdata? This is hard code
+  data$setText(paste(path, collapse="$"))
+  
+  data
+})
 
 
 ## Class for variable browser.
@@ -31,14 +50,17 @@ GVarBrowser <- setRefClass("GVarBrowser",
                              ),
                             methods=list(
                               initialize=function(toolkit=NULL,
-                                handler=NULL, action=NULL, container=NULL, ...) {
+                                handler=NULL, action=NULL, container=NULL, ..., fill=NULL) {
 
                                 ws_model <<- gWidgets2:::WSWatcherModel$new(toolkit=guiToolkit())
                                 o = gWidgets2:::Observer$new(function(self) {self$update_view()}, obj=.self)
                                 ws_model$add_observer(o)
 
                                 widget <<-  Qt$QTreeView()
-                                model <- Qt$QStandardItemModel(rows=0, columns=2) # name, summary
+#                                model <- Qt$QStandardItemModel(rows=0, columns=2) # name, summary
+                                model <- GQStandardItemModel(rows=0, columns=2) # name, summary
+                                model$view <- .self
+                                
                                 model$setHorizontalHeaderLabels(gettext("Variable", "Summary"))
                                 widget$setAlternatingRowColors(TRUE)
                                 widget$setIndentation(14) # tighten up
@@ -64,8 +86,13 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                                                gWidgets2:::gvarbrowser_default_classes)
                                 
                                 add_context_menu()
+
+
+                                ## fill hack
+                                if(is(container, "GBoxContainer") && (missing(fill) || is.null(fill)))
+                                  fill <- "both"
                                 
-                                add_to_parent(container, .self, ...)
+                                add_to_parent(container, .self, ..., fill=fill)
 
                                 handler_id <<- add_handler_changed(handler, action)
 
