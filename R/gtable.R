@@ -57,7 +57,6 @@ GTable <- setRefClass("GTable",
                                 
                                 ## setup widget
                                 widget <<- Qt$QTableView()
-
                                 ## customize widget
                                 delegate <- qrTextFormattingDelegate(widget) # pass view as parent or store reference
                                 widget$setItemDelegate(delegate)
@@ -111,8 +110,8 @@ GTable <- setRefClass("GTable",
                               },
                         get_model=function() {
                           "Helper. Get DataFrameModel from proxy"
-                          widget$model()$sourceModel() ## using proxy
-                          ## widget$model()            ## without a proxy
+                          ## widget$model()$sourceModel() ## using proxy
+                          widget$model()            ## without a proxy
                         },
                         get_value=function(drop=TRUE, ...) {
                           idx <- get_index()
@@ -214,10 +213,12 @@ GTable <- setRefClass("GTable",
                           if(missing(i) && missing(j)) {
                             l <- extract_pieces(value)
                             q_model <<- qdataFrameModel(l$items, useRoles=TRUE)
-                            proxy_model <<- Qt$QSortFilterProxyModel()
-                            proxy_model$setSourceModel(q_model)
-                            widget$setModel(proxy_model)
-#                            widget$setModel(q_model)
+                            widget$setModel(q_model)
+                            ## or if using proxy
+                            ## proxy_model <<- Qt$QSortFilterProxyModel()
+                            ## proxy_model$setSourceModel(q_model)
+                            ## widget$setModel(proxy_model)
+
                             q_model$setParent(widget) # avoids GC
                             set_icons(l$icons)
                             set_tooltips(l$tooltip)
@@ -303,7 +304,7 @@ GTable <- setRefClass("GTable",
                           "Add a popup menu to the columns. Function should generate list of actions, ..."
                           if(is.null(menu_fun))
                             menu_fun <- .self$default_popup_menu
-                          
+                          ## XXX This is not done!!
                          
                         },
                         remove_popup_menu=function() {
