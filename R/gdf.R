@@ -53,7 +53,7 @@ GDf <- setRefClass("GDf",
                        qmodel$setParent(widget)
 
                        ## Michaels text formatting delagate does all the hard work:
-                       delegate <- qrTextFormattingDelegate(view)
+                       delegate <- qrTextFormattingDelegate(widget)
                        widget$setItemDelegate(delegate)
 
                        
