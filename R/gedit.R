@@ -41,6 +41,49 @@ qsetMethod("keyPressEvent", GQLineEdit, function(e) {
   
 })
 
+## DND support
+qsetMethod("dragEnterEvent", GQLineEdit, function(event) {
+  mime_data <- event$mimeData()
+
+  ## Our special types
+  RDA_MIME_TYPE <- "application/x-rlang-transport"
+
+  if(any(sapply(c(RDA_MIME_TYPE), mime_data$hasFormat)) ||
+     mime_data$hasText() ||
+     mime_data$hasHtml() 
+     )
+    event$acceptProposedAction();
+  
+})
+qsetMethod("dropEvent", GQLineEdit, function(event) {
+  message("Drop event")
+  mime_data <- event$mimeData()
+
+  ## special types
+  RDA_MIME_TYPE <- "application/x-rlang-transport"
+
+  ## XXX Should call dropHandler somewhere in here XXX
+  
+  if(mime_data$hasHtml()) {
+    ## html format
+    setText(mime_data$html)
+    event$acceptProposedAction()
+  } else if(mime_data$hasText()) {
+    ## plain text
+    setText(mime_data$text())
+    event$acceptProposedAction()
+  } else if(mime_data$hasFormat(RDA_MIME_TYPE)) {
+    assign("data",mime_data$data(RDA_MIME_TYPE), .GlobalEnv)
+    name_list <- unserialize(mime_data$data(RDA_MIME_TYPE))
+    if (length(name_list) && is.character(name_list[[1]])) {
+      name <- name_list[[1]]
+      setText(name)
+      event$acceptProposedAction()
+    }
+  } 
+})
+
+
 
 ## Validator framework
 ## Set the validator function through the \code{set_validator} method of the object
@@ -73,7 +116,7 @@ GEdit <- setRefClass("GEdit",
                               initialize=function( toolkit=NULL,
                                 text = "", width = 25, coerce.with = NULL,
                                 initial.msg="",
-                                handler = NULL, action = NULL, container = NULL, ...) {
+                                handler = NULL, action = NULL, container = NULL, ..., fill=NULL) {
 
                                 widget <<- GQLineEdit()
                                 widget$setObj(.self)
@@ -97,6 +140,9 @@ GEdit <- setRefClass("GEdit",
                                   unblock_observers()
                                 })
 
+                                ## configure for drop and drop
+                                widget$setAcceptDrops(TRUE)
+                                widget$setDragEnabled(TRUE)
                                 
                                 ## set up text
                                 if(nchar(initial.msg) > 0)
@@ -105,7 +151,11 @@ GEdit <- setRefClass("GEdit",
                                 if(nchar(text) > 0)
                                   set_value(text)
 
-                                add_to_parent(container, .self, ...)
+                                ## fill hack
+                                if(is(container, "GBoxContainer") && (missing(fill) || is.null(fill)))
+                                  fill <- "x"
+                                
+                                add_to_parent(container, .self, ..., fill=fill)
                                 
                                 handler_id <<- add_handler_changed(handler, action)
 
