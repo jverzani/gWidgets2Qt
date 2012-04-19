@@ -32,8 +32,7 @@ qsetMethod("mimeData", GQStandardItemModel, function(lst) {
     super("mimeData", lst)
 
   data <- Qt$QMimeData()
-  txt <- obj$notify_observers(signal="drag-source", drag_data=path)[[1]]
-  ## Grab from handler$dropdata? This is hard code
+  txt <- obj$notify_observers(signal="drag-event", drag_data=path)[[1]]
   data$setText(txt)
   
   data
@@ -83,7 +82,7 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                            )
                                 
                                 ## set up drag source
-                                add_drag_source(function(h,...) {
+                                add_drop_source(function(h,...) {
                                   path <- h$drag_data
                                   paste(path, collapse="$")
                                 })
