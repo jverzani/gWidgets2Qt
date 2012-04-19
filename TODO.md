@@ -1,5 +1,6 @@
-drag-and-drop (use handlers, now it is hard coded (gedit, gtable, gvarbrowser ...)!)
+drag-and-drop
 popup menus
+DONE font<- (use qfont)
 
 ## General
 fonts (styles, fonts objects)
