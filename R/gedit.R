@@ -42,18 +42,24 @@ qsetMethod("keyPressEvent", GQLineEdit, function(e) {
 })
 
 ## DND support
+## This should generalize to other widgets, but for now we keep with the LineEdit widget
 qsetMethod("dragEnterEvent", GQLineEdit, function(event) {
   mime_data <- event$mimeData()
 
   ## Our special types
   RDA_MIME_TYPE <- "application/x-rlang-transport"
 
-  if(any(sapply(c(RDA_MIME_TYPE), mime_data$hasFormat)) ||
-     mime_data$hasText() ||
-     mime_data$hasHtml() 
-     )
+  ## We need to a) be the right type and b) have a handler defined to receive drop events
+  if((
+      any(sapply(c(RDA_MIME_TYPE), mime_data$hasFormat)) ||
+      mime_data$hasText() ||
+      mime_data$hasHtml() 
+      )
+     &&
+     length(obj$..observers[['drop-event']])
+     ) {
     event$acceptProposedAction();
-  
+  } 
 })
 qsetMethod("dropEvent", GQLineEdit, function(event) {
   message("Drop event")
@@ -62,25 +68,29 @@ qsetMethod("dropEvent", GQLineEdit, function(event) {
   ## special types
   RDA_MIME_TYPE <- "application/x-rlang-transport"
 
-  ## XXX Should call dropHandler somewhere in here XXX
-  
   if(mime_data$hasHtml()) {
     ## html format
     setText(mime_data$html)
     event$acceptProposedAction()
   } else if(mime_data$hasText()) {
     ## plain text
-    setText(mime_data$text())
+    txt <- mime_data$text()
+    if(length(obj$..observers[['drop-event']])) {
+      try(obj$notify_observers(signal="drop-event", dropdata=txt), silent=TRUE)
+    }
     event$acceptProposedAction()
   } else if(mime_data$hasFormat(RDA_MIME_TYPE)) {
-    assign("data",mime_data$data(RDA_MIME_TYPE), .GlobalEnv)
     name_list <- unserialize(mime_data$data(RDA_MIME_TYPE))
     if (length(name_list) && is.character(name_list[[1]])) {
-      name <- name_list[[1]]
-      setText(name)
-      event$acceptProposedAction()
+      txt <- name_list[[1]]
+      if(length(obj$..observers[['drop-event']])) {
+        try(obj$notify_observers(signal="drop-event", dropdata=txt), silent=TRUE)
+      }
     }
-  } 
+    event$acceptProposedAction()
+  } else {
+    super("dropEvent", event)
+  }
 })
 
 
@@ -103,7 +113,8 @@ qsetMethod("validate", GQEditValidator, function(input, pos) {
   }
 })
 
-##' The GEdit class adds some methods beyond the spec: \code{set_error}, \code{clear_error}, \code{validate_value}
+## The \code{GEdit} class can be a drop target or source. To be a drop target, one must call addDropTarget, as no
+## default handler is set. The value h$dropdata is used to parameterize the call.
 GEdit <- setRefClass("GEdit",
                             contains="GWidget",
                             fields=list(
@@ -125,7 +136,7 @@ GEdit <- setRefClass("GEdit",
                                            coerce_with=coerce.with,
                                            completer=NULL,
                                            validator=NULL,
-                                           change_signal="returnPressed"
+                                           change_signal="editingFinished"
                                            )
 
                                 ## completion framework
@@ -135,9 +146,9 @@ GEdit <- setRefClass("GEdit",
                                 widget$setCompleter(completer)
                                 completer$setModel(model)
                                 qconnect(completer, "activated(QString)", function(txt) {
-                                  block_observers()
+#                                  block_observers()
+#                                  on.exit(unblock_observers())
                                   set_value(txt)
-                                  unblock_observers()
                                 })
 
                                 ## configure for drop and drop
@@ -245,24 +256,44 @@ GEdit <- setRefClass("GEdit",
                               ## },
                              
 
-                              ## Extra methods
+                              ## Validation methods
+                              ## This is Qt Specific
                               set_validator = function(FUN) {
-                                "Set a function to do the validation. Use FUN=NULL to remove"
+                                "Set a function to do the validation. Use FUN=NULL to remove. FUN is a function of single variable and returns a logical"
                                 validator <<- GQEditValidator()
                                 validator$setFun(FUN)
                                 widget$setValidator(validator)
                               },
+                              ## Basic validation
+
+## background-image: url(:/icons/icons/table_add_16.png);
+## background-repeat: no-repeat;
+## background-position: center right;
+## padding-right: 17px;
+## height: 27px
+
+                              invalid_style=function() {
+                                "Style for invalid entry. Cf. http://doc.qt.nokia.com/4.7-snapshot/stylesheet-examples.html"
+                                out <- "
+  border: 2px solid red;
+  border-radius: 10px;
+  padding: 0 8px;
+  selection-background-color: darkgray;
+";
+                                return(out)
+                              },
                               set_invalid=function(value, msg=NULL) {
+                                ## adjust widget
                                 if(value) {
-                                  ## XXX work on this. 
-                                  ## an error
-                                  if(!is.null(msg))
-                                    warning(msg)
+                                  widget$setStyleSheet(invalid_style())
+                                  widget$setToolTip(msg)
                                 } else {
-                                  ## clear error
-
+                                  widget$setStyleSheet("")
+                                  widget$setToolTip("")                                  
                                 }
-
+                                
+                                ## next
+                                callSuper(value, msg)
                               }
                               ))
 
