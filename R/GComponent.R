@@ -31,7 +31,9 @@ GComponent <- setRefClass("GComponent",
                                  block="ANY",
                                  parent="ANY", # NULL for gwindow, else parent container
                                  handler_id="ANY",
-                                 .e="environment"
+                                 .e="environment",
+                                 .invalid="logical",
+                                 .invalid_reason="character"
                                  ),
                                methods=list(
                                  initialize=function(toolkit=guiToolkit(), ..., expand, fill, anchor, label, index, align) {
@@ -56,7 +58,55 @@ GComponent <- setRefClass("GComponent",
                                    if(value) widget$setFocus(Qt$Qt$OtherFocusReason)
                                  },
                                  set_font = function(value) {
-                                   message("XXX")
+                                   value <- as.list(value)
+                                   ## qfont has values for family, pointsize, weight, italic with defaults given by baseFont$style()
+
+                                   ## we just need to map
+                                   vals <- list()
+                                   if(!is.null(value$family))
+                                     vals$family <- switch(value$family,
+                                                           "sans"="Arial",
+                                                           "helvetica"="Helvetica",
+                                                           "times"="Times",
+                                                           "monospace"="Courier",
+                                                           NULL)
+
+                                   
+                                   if(!is.null(value$weight))
+                                     vals$weight <- switch(value$weight,
+                                                           "light"=Qt$QFont$Light,
+                                                           "normal"=Qt$QFont$Normal,
+                                                           "medium"=Qt$QFont$DemiBold,
+                                                           "bold"=Qt$QFont$Bold,
+                                                           "heavy"=Qt$QFont$Black,
+                                                           NULL)
+
+                                   if(!is.null(value$style)) 
+                                     vals$italic <- value$styles == "italic"
+
+                                   if(!is.null(value$size))
+                                     vals$pointsize <- as.integer(value$size)
+
+
+                                   if(!is.null(value$scale))
+                                     vals$pointsize <- switch(value$scale,
+                                                         "xx-large"=24,
+                                                         "x-large"=18,
+                                                         "large"=14,
+                                                         "medium"=12,
+                                                         "small"=10,
+                                                         "x-small"=8,
+                                                         "xx-small"=6,
+                                                         NULL)
+
+                                   fnt <- do.call(qfont, vals)
+                                   if(!is.null(widget$font))
+                                     widget$font <<- fnt
+
+                                   ## colors??? /Users/verzani/pmg/GW-refactor/gWidgets2Qt/R/XXX
+                                   ## set with stylesheet. Maybe better to use palette
+                                   if(!is.null(value$color))
+                                     widget$setStyleSheet(sprintf("* {color: %s}", value$color))
                                  },
                                  ## size, size<-
                                  get_size=function() {
@@ -79,6 +129,22 @@ GComponent <- setRefClass("GComponent",
                                  set_attr = function(key, value) {
                                    tmp <- .e
                                    attr(tmp, key) <- value
+                                 },
+                                 set_invalid=function(value, msg) {
+                                   "Set widget as invalid or not"
+                                   if(as.logical(value)) {
+                                     .invalid <<- TRUE
+                                     .invalid_reason <<- as.character(msg)
+                                   } else {
+                                     .invalid <<- FALSE
+                                     .invalid_reason <<- ""
+                                   }
+                                 },
+                                 is_invalid=function(...) {
+                                   "Is widget in an invalid state"
+                                   if(length(.invalid) == 0)
+                                     .invalid <<- FALSE
+                                   .invalid
                                  },
                                  ##
                                  set_parent = function(parent) parent <<- parent,
@@ -309,21 +375,21 @@ GComponentObservable <- setRefClass("GComponentObservable",
                                         message("XXX no focus out handler defined for object of class", class(.self))
                                       },
                                       ## DND
-                                      add_drop_handler=function(handler, action=NULL, ...) {
-                                        "We use drop-target signal. This is not connected to a widget"
-                                        widget$acceptDrops <- TRUE
+                                      add_drop_target=function(handler, action=NULL, ...) {
+                                        "We use drop-event signal. This is not connected to a widget"
+                                        widget$acceptDrops <<- TRUE
                                         if(is_handler(handler)) {
                                           o <- gWidgets2:::observer(.self, handler, action)
-                                          invisible(add_observer(o, "drop-target"))
+                                          invisible(add_observer(o, "drop-event"))
                                         }
                                       },
-                                      add_drag_source=function(handler, action=NULL, ...) {
-                                        "We use drag-source signal. Not connected to a widget"
-                                        widget$dragEnabled <- TRUE
+                                      add_drop_source=function(handler, action=NULL, ...) {
+                                        "We use drag-event signal. Not connected to a widget"
+                                        widget$dragEnabled <<- TRUE
                                         if(is_handler(handler)) {
                                           o <- gWidgets2:::observer(.self, handler, action)
-                                          remove_observers("drag-source") # only 1
-                                          invisible(add_observer(o, "drag-source"))
+                                          remove_observers("drag-event") # only 1
+                                          invisible(add_observer(o, "drag-event"))
                                         }
                                       },
                                       ## some more
