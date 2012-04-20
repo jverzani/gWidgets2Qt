@@ -162,6 +162,9 @@ GComponent <- setRefClass("GComponent",
                                  get_allocation=function() {
                                    "Return allocation (width x height) of widget"
                                    c(width=widget$width, height=widget$height)
+                                 },
+                                 is_extant=function() {
+                                   !inherits(try(widget$parent(), silent=TRUE), "try-error")
                                  }
                                  ## ## Qt handler code
                                  ## handler_widget = function() widget, # allow override for block (glabel)
