@@ -19,6 +19,8 @@ qsetProperty("obj", GQMainWindow)
 qsetProperty("action", GQMainWindow)
 qsetProperty("unrealize_handler", GQMainWindow)
 
+## Not quite ideal. If window closed via dispose, then isExtant will be FALSE. However,
+## if closed via window manager event, no such luck
 qsetMethod("closeEvent", GQMainWindow, function(event) {
   ##
   .obj$notify_observers(signal="destroy-event") # add_handler_destroy
@@ -28,10 +30,11 @@ qsetMethod("closeEvent", GQMainWindow, function(event) {
   } else {
     h <- list(obj=obj, action=action)
     val <- unrealize_handler(h)
-    if(val)
+    if(val) {
       event$accept()
-    else
+    } else {
       event$ignore()
+    }
   }
 })
                          
@@ -134,6 +137,8 @@ GWindow <- setRefClass("GWindow",
                                 "close window"
                                 widget$close()
                                 widget$setParent(NULL)
+                                ## Do I need this? It makes `isExtant` work, but might cause issues with stability
+                                widget[["~QWidget"]]()
                               },
                               ##
                               ## add methods
