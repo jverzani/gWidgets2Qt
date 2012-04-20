@@ -277,20 +277,20 @@ GTree <- setRefClass("GTree",
                              if(nrow(DF) > 0) {
                                mapply(.self$add_row, list(item), lapply(1:nrow(DF), function(i) DF[i,]),
                                       pieces$offspring,
-                                      pieces$icon,
-                                      pieces$tooltip)
+                                      if(is.null(pieces$icon)) list(NULL) else pieces$icon,
+                                      if(is.null(pieces$tooltip)) list(NULL) else pieces$tooltip)
                              }
                            },
-                           add_row=function(parent_item, DF_row, offspring=FALSE, icon=NULL, tooltip=NULL) {
-                             "Helper: function to add a row. Called by add_offspring"
-                             ## values
-                             l <- lapply(as.character(unlist(DF_row)), Qt$QStandardItem)
+                       add_row=function(parent_item, DF_row, offspring=FALSE, icon=NULL, tooltip=NULL) {
+                         "Helper: function to add a row. Called by add_offspring"
+                         ## values
+                         l <- lapply(as.character(unlist(DF_row)), Qt$QStandardItem)
                          parent_item$appendRow(l)
-
+                         
                          ## icon
-                         if(!is.null(icon <- getStockIconByName(icon)))
+                         if(!is.null(icon) && !is.null(icon <- getStockIconByName(icon)))
                            l[[1]]$setIcon(as_qicon(icon))
-
+                         
                          ## tooltip
                          if(!is.null(tooltip))
                            l[[1]]$setToolTip(as.character(tooltip))
@@ -302,7 +302,7 @@ GTree <- setRefClass("GTree",
                        },
                        offspring_pieces=function(path) {
                          "Helper: Compute offspring, return pieces DF, offspring, icon, tooltip in a list"
-                         os <- offspring(path, offspring.data)
+                         os <- offspring(path, offspring_data)
                          the_offspring <- icon <- tooltip <- NULL
                          if(!is.null(offspring_col))
                            the_offspring <- os[[offspring_col]]
