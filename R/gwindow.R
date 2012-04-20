@@ -12,6 +12,32 @@ NULL
   GWindow$new(toolkit, title, visible, name, width, height, parent, handler, action,  ...)
 }
 
+
+qsetClass("GQMainWindow", Qt$QMainWindow)
+
+qsetProperty("obj", GQMainWindow)
+qsetProperty("action", GQMainWindow)
+qsetProperty("unrealize_handler", GQMainWindow)
+
+qsetMethod("closeEvent", GQMainWindow, function(event) {
+  ##
+  .obj$notify_observers(signal="destroy-event") # add_handler_destroy
+
+  if(is.null(unrealize_handler)) {
+    event$accept()
+  } else {
+    h <- list(obj=obj, action=action)
+    val <- unrealize_handler(h)
+    if(val)
+      event$accept()
+    else
+      event$ignore()
+  }
+})
+                         
+
+  
+
 GWindow <- setRefClass("GWindow",
                             contains="GContainer",
                             fields=list(
@@ -26,7 +52,18 @@ GWindow <- setRefClass("GWindow",
                                 parent=NULL, handler, action, ...) {
 
                                 ## XXX Parent stuff ...
-                                block <<- widget <<- Qt$QMainWindow()
+                                if(is(parent,"GComponent")) {
+                                  block <<- widget <<- GQMainWindow(getBlock(parent), Qt$Qt$SubWindow)
+                                  getTopLevel(parent)$add_handler_destroy(function(h,...) {
+                                    w <- h$action
+                                    if(isExtant(w))
+                                      w$dispose_window()
+                                    }, action=.self)
+                                } else {
+                                  block <<- widget <<- GQMainWindow()
+                                }
+                                widget$obj <<- .self
+                                
                                 set_value(title)
                                 initFields(toolkit=toolkit
                                            )
@@ -38,7 +75,31 @@ GWindow <- setRefClass("GWindow",
                                 if(visible)
                                   set_visible(TRUE)
 
+
+                                ## initial position if given
+                                if(!is.null(parent)) {
+                                  if(is.numeric(parent)) {
+                                    set_xy(parent)
+                                  }
+                                }
+
+                                if(!is.null(handler))
+                                   add_handler_destroy(handler)
+                                
                                 callSuper(...)
+                              },
+                              set_xy=function(place) {
+                                "Place are c(x,y, [width], [height])"
+                                print(list("set_xy", length(place)))
+                                if(length(place) < 2)
+                                  stop(gettext("The place argument needs x and y coordinates"))
+                                if(length(place) == 2)
+                                  place[3] <- widget$geometry$width()
+                                if(length(place)== 3)
+                                  place[4] <- widget$geometry$height()
+                                place <- as.integer(place)
+                                r <- qrect(place[1], place[2], place[1] + place[3], place[2] + place[4])
+                                widget$setGeometry(r)
                               },
                               ## Widget methods
                               get_value = function(...) widget$windowTitle,
@@ -116,8 +177,14 @@ GWindow <- setRefClass("GWindow",
                                 widget$statusBar()$showMessage(msg)
                               },
                               clear_statusbar=function(msg, ...) {set_statusbar("")},
-                              add_handler_unrealize = function(...) {XXX("Implement me")},
-                              add_handler_destroy = function(...) {XXX("Implement me")}
+                              add_handler_unrealize = function(handler, action=NULL, ...) {
+                                widget$action <<- action
+                                widget$unrealize_handler <<- handler
+                              },
+                                add_handler_destroy = function(handler, action=NULL, ...) {
+                                add_handler("destroy-event", handler, action)
+                              },
+                                connect_to_toolkit_signal=function(...) {}
                               ))
 
 
