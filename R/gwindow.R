@@ -24,7 +24,7 @@ qsetProperty("unrealize_handler", GQMainWindow)
 qsetMethod("closeEvent", GQMainWindow, function(event) {
   ##
   .obj$notify_observers(signal="destroy-event") # add_handler_destroy
-
+  
   if(is.null(unrealize_handler)) {
     event$accept()
   } else {
