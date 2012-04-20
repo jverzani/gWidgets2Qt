@@ -268,14 +268,15 @@ GBasicDialog <- setRefClass("GBasicDialog",
                                             ) {
 
   ## We just use a message box. Qt does not provide an InfoBar widget, like RGtk2 and there is no
-  ## standard notification support
+  ## standard notification support. For Mac there is Qt$Qt$QSheet window flag, but am not sure how to make that
+  ## cross platform
   
   if(!is.null(parent)) {
     toplevel <- getTopLevel(parent)
 
     parentw <- getBlock(toplevel)
-    ## XXX Could use Qt$Qt$Sheet for window type here...
     mb <- Qt$QMessageBox(parentw)
+    mb$setWindowModality(Qt$Qt$WindowModal)
   } else {
     mb <- Qt$QMessageBox()
   }
@@ -288,12 +289,13 @@ GBasicDialog <- setRefClass("GBasicDialog",
    
   mb$setIcon(QtPredefinedIcons["info"])
 
-  mb$show(); mb$raise()
-
   timer <- Qt$QTimer()
   timer$setSingleShot(TRUE)
   qconnect(timer, "timeout", function() mb$close())
   timer$start(as.integer(delay*1000))         # in ms
-  
+    
+  mb$show(); mb$raise()
+
+ 
 }
 
