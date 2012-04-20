@@ -272,7 +272,9 @@ GBasicDialog <- setRefClass("GBasicDialog",
   
   if(!is.null(parent)) {
     toplevel <- getTopLevel(parent)
+
     parentw <- getBlock(toplevel)
+    ## XXX Could use Qt$Qt$Sheet for window type here...
     mb <- Qt$QMessageBox(parentw)
   } else {
     mb <- Qt$QMessageBox()
