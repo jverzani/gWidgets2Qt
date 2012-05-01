@@ -7,7 +7,8 @@ Depends:
     methods,
     qtbase,
     qtutils,
-    gWidgets2,
+    gWidgets2
+Suggests:
     testthat
 Maintainer: John Verzani <jverzani@gmail.com>
 Description: The gWidgets2 API provides a simplified means for GUI development
