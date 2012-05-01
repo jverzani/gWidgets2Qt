@@ -44,24 +44,26 @@ GVarBrowser <- setRefClass("GVarBrowser",
                             contains="GTreeBase",
                           fields=list(
                              "ws_model"="ANY",
-                             "icon_classes"="list",
-                             "timer"= "ANY",
+                             "filter_classes"="list",
+                            "filter_name"="character",
+                            "other_label"="character",
+                            "timer"= "ANY",
+                            "use_timer"="logical",
                             "item_list"="list"
                              ),
                             methods=list(
                               initialize=function(toolkit=NULL,
                                 handler=NULL, action=NULL, container=NULL, ..., fill=NULL) {
 
-                                ws_model <<- gWidgets2:::WSWatcherModel$new(toolkit=guiToolkit())
+                                ws_model <<- gWidgets2:::WSWatcherModel$new()
                                 o = gWidgets2:::Observer$new(function(self) {self$update_view()}, obj=.self)
                                 ws_model$add_observer(o)
 
                                 widget <<-  Qt$QTreeView()
-#                                model <- Qt$QStandardItemModel(rows=0, columns=2) # name, summary
                                 model <- GQStandardItemModel(rows=0, columns=2) # name, summary
                                 model$obj <- .self
                                 
-                                model$setHorizontalHeaderLabels(gettext("Variable", "Summary"))
+                                model$setHorizontalHeaderLabels(c(gettext("Variable"), gettext("Summary")))
                                 widget$setAlternatingRowColors(TRUE)
                                 widget$setIndentation(14) # tighten up
                                 
@@ -75,21 +77,21 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                 
                                 widget$setEditTriggers(Qt$QAbstractItemView$NoEditTriggers)
                                 widget$setSelectionBehavior(Qt$QAbstractItemView$SelectRows)
+                                widget$setSelectionMode(Qt$QAbstractItemView$MultiSelection) # multiple selection
 
                                 initFields(block=widget,
                                            change_signal="activated",
-                                           item_list=list()
+                                           item_list=list(),
+                                           filter_classes=gWidgets2:::gvarbrowser_default_classes,
+                                           filter_name="",
+                                           other_label="Other",
+                                           use_timer=TRUE
                                            )
                                 
                                 ## set up drag source
                                 add_drop_source(function(h,...) {
-                                  path <- h$drag_data
-                                  paste(path, collapse="$")
+                                  svalue(h$obj)
                                 })
-
-
-                                icon_classes <<- getWithDefault(getOption("gwidgets2:gvarbrowser_classes"),
-                                                               gWidgets2:::gvarbrowser_default_classes)
                                 
                                 add_context_menu()
 
@@ -102,15 +104,18 @@ GVarBrowser <- setRefClass("GVarBrowser",
 
                                 handler_id <<- add_handler_changed(handler, action)
 
-                                ## Try our oown timer. Need to check in update view the size and slow down if too large
+                                ## Try our own timer. 
                                 timer <<- gtimer(1000, function(...) .self$ws_model$update_state())
                                 
-                                init_view()
+                                populate_view()
 
                                 
                                 callSuper(toolkit)
                               },
-                              start_timer=function() timer$start_timer(),
+                              start_timer=function() {
+                                if(use_timer)
+                                  timer$start_timer()
+                              },
                               stop_timer=function() timer$stop_timer(),
                               adjust_timer=function(ms) {
                                 "Adjust interval to size of workspace"
@@ -120,6 +125,17 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                 }
                                 timer$set_interval(ms)
                               },
+                              set_filter_name=function(value) {
+                                message("Setting a regular expression to filter the displayed objects is not supported")
+                                return()
+                                filter_name <<- value
+                                populate_view()
+                              },
+                              set_filter_classes=function(value) {
+                                filter_classes <<- value
+                                populate_view()
+                              },
+                              ##
                               add_value=function(x, name, parent_item, item=NULL) {
                                 "Add a row to the model"
                                 if(is.null(item))
@@ -132,7 +148,7 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                 if(!is.null(icon))
                                   item$setIcon(as_qicon(icon))
                                 ## tooltip?
-
+                                
                                 if(is.null(item$parent())) {
                                   parent_item$appendRow(list(item, summary_item))
                                 }
@@ -152,52 +168,64 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                 ## return item
                                 invisible(item)
                               },
-                              init_view=function(...) {
+                              clear_items=function() {
+                                "Clear old items"
+                                model <- widget$model()
+                                cnt <- model$rowCount()
+                                sapply(rev(seq_len(cnt)) - 1, function(i) {
+                                  root <- model$indexFromItem(model$invisibleRootItem())
+                                  model$removeRow(i, root)
+                                })
+                              },
+                              populate_view=function(...) {
                                 "Initialize tree. Afterwards we only modify values"
                                 ## we need to update top-level object
-                                ## use icon_classes to break up object
-                                categories <- names(icon_classes) # also "Other"
-                                category_color <- Qt$QBrush(qcolor(0, 0, 255))
-
-                                
+                                ## use filter_classes to break up object
+                                clear_items()
                                 root <- widget$model()$invisibleRootItem()
-                                for(i in categories) {
-                                  item <- Qt$QStandardItem(i)
+
+
+                                  ## do categories
+                                  categories <- names(filter_classes) # also "Other"
+                                  category_color <- Qt$QBrush(qcolor(0, 0, 255))
+                                  
+
+                                  
+                                  for(i in categories) {
+                                    item <- Qt$QStandardItem(i)
+                                    item$setForeground(category_color)
+                                    root$appendRow(item)
+                                    ## what to add
+                                    klasses <- filter_classes[[i]]
+                                    out <- ws_model$get_by_function(function(y)  length(Filter(function(x) is(y, x), klasses) > 0))
+                                    out_names <- names(out)
+                                    idx <- order(out_names)
+
+                                    if(length(out))
+                                      sapply(seq_along(out), function(i) add_value(out[idx][[i]], out_names[idx][i], item))
+                                  }
+                                  ## other
+                                  item <-  Qt$QStandardItem(gettext(other_label))
                                   item$setForeground(category_color)
                                   root$appendRow(item)
-                                  ## what to add
-                                  klasses <- icon_classes[[i]]
-                                  out <- ws_model$get_by_function(function(y)  length(Filter(function(x) is(y, x), klasses) > 0))
+                                  
+                                  klasses <- unlist(filter_classes)
+                                  out <- ws_model$get_by_function(function(y)  !(length(Filter(function(x) is(y, x), klasses) > 0)))
                                   out_names <- names(out)
                                   idx <- order(out_names)
-
+                                  out <- out[idx]; out_names <- out_names[idx]
                                   if(length(out))
-                                    sapply(seq_along(out), function(i) add_value(out[idx][[i]], out_names[idx][i], item))
-                                }
-                                ## other
-                                item <-  Qt$QStandardItem(gettext("Other"))
-                                item$setForeground(category_color)
-                                root$appendRow(item)
-                                
-                                klasses <- unlist(icon_classes)
-                                out <- ws_model$get_by_function(function(y)  !(length(Filter(function(x) is(y, x), klasses) > 0)))
-                                out_names <- names(out)
-                                idx <- order(out_names)
-                                out <- out[idx]; out_names <- out_names[idx]
-                                if(length(out))
-                                  sapply(seq_along(out), function(i) add_value(out[[i]], out_names[i], item))
+                                    sapply(seq_along(out), function(i) add_value(out[[i]], out_names[i], item))
+
 
                                 start_timer()
+                                
                               },
                               update_view=function(...) {
-                                "Ugly function to update browser"
+                                "Update view of objects"
                                 stop_timer()
                                 on.exit({adjust_timer(); start_timer()})
 
-                                changes <- ws_model$changes
-
-                                ## Main workers
-                                ## we use an internal cache -- item_list to look up item by name
                                 ## for items in the global workspace.
                                 remove_item <- function(nm) {
                                   item <-  item_list[[nm, exact=TRUE]]
@@ -205,12 +233,12 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                   item$parent()$removeRow(item$row())
                                 }
                                 add_item <- function(x, nm) {
-                                  type <- Filter(function(i) any(sapply(i, "is", object=x)), icon_classes)
+                                  type <- Filter(function(i) any(sapply(i, "is", object=x)), filter_classes)
                                   if(length(type) == 0)
                                     type <- gettext("Other") # catch all
                                   else
                                     type <- names(type)
-                                  ## add to type, then sort within ...
+                                  ## add to type, then sort within ... too much sorting
                                   parent_item <- widget$model()$findItems(type)[[1]]
                                   item <- add_value(x, nm, parent_item)
                                   parent_item$sortChildren(0L)
@@ -222,31 +250,58 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                   add_item(x, nm)
                                 }
 
-                                mapply(remove_item, changes$removed) # name only, object is gone
-                                mapply(add_item, mget(changes$added, .GlobalEnv), changes$added)
-                                mapply(update_item, mget(changes$changed, .GlobalEnv), changes$changed)
+                                
+                                ## We use item_list as a cache to do most of the work
+                                if(nchar(filter_name)) {
+                                  objs <- ws_model$filter_names(function(x) {
+                                    force(filter_name)
+                                    grepl(filter_name, x)
+                                  })
+                                  
+                                } else {
+                                  ## use changes
+                                  changes <- ws_model$changes
+                                  
+                                  mapply(remove_item, changes$removed) # name only, object is gone
+                                  mapply(add_item, mget(changes$added, .GlobalEnv), changes$added)
+
+
+                                  mapply(update_item, mget(changes$changed, .GlobalEnv), changes$changed)
+                                }
                               },
+                              ##
                               get_value=function(drop=TRUE, ...) {
-                                "Get selected values as names. A value may be 'name' or 'lst$name1$name2'"
-                                out <- callSuper("get_value", drop=FALSE)[-1] # drop first
+                                "Get selected values as names or objects if drop=FALSE"
+                                out <- callSuper("get_value", drop=FALSE)
+                                if(!is.list(out)) ## work with lists
+                                  out <- list(out)
+                                if(nchar(filter_name) == 0) 
+                                    out <- lapply(out, "[", -1)
+                                
                                 if(length(out) == 0)
-                                  return(NA) # XXX what is right return values
-                                drop <- ifelse(is.null(drop), TRUE, drop)
-                                if(drop) {
-                                  if(is.list(out))
-                                    out <- lapply(out, paste, collapse="$")
-                                  else
-                                    out <- paste(out, collapse="$")
-                                  if(is.list(out) && length(out) == 1)
-                                    out <- out[[1]]
+                                  return(character(0)) 
+
+                                  nms <- lapply(out, function(x) {
+                                    sapply(x, function(i) ifelse(grepl("\\s", i),
+                                                                 sprintf("'%s'", i),
+                                                                 i))
+                                  })
+                                nms <- lapply(nms, paste, collapse="$")
+                                
+                                if(is.null(drop) || drop) {
+                                  ## return non "" names
+                                  Filter(nchar, nms)
                                 } else {
                                   ## return objects, not values
-                                  if(is.list(out))
-                                     out <- sapply(out, gWidgets2:::get_object_from_string)
+                                  out <- lapply(out, gWidgets2:::get_object_from_string)
+                                  names(out) <- nms
+                                  ind <- which(nms == "")
+                                  out <- out[ind]
+                                  if(length(out) == 1)
+                                    out[[1]]
                                   else
-                                    out <- gWidgets2:::get_object_from_string(out)
+                                    out
                                 }
-                                out
                               },
 
                               set_value=function(value, ...) {
@@ -258,5 +313,9 @@ GVarBrowser <- setRefClass("GVarBrowser",
                                 ## XXX update
                                 ## make context sensitive menu. Requires identifying value of selected
                                
+                              },
+                              ## selection is changed
+                              add_handler_selection_changed=function(handler, action=NULL, ...) {
+                                add_handler("selectionChanged", handler, action, emitter=widget$selectionModel())
                               }
                               ))
