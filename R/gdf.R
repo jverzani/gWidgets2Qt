@@ -171,7 +171,7 @@ GDf <- setRefClass("GDf",
                                    emitter=widget$horizontalHeader())
                      },
                      add_handler_column_double_click=function(handler, action=NULL, ...) {
-                       add_handler("sectionDoublrClicked", handler, action, decorator=.self$column_decorator,
+                       add_handler("sectionDoubleClicked", handler, action, decorator=.self$column_decorator,
                                    emitter=widget$horizontalHeader())
                      },
                      add_handler_column_right_click=function(handler, action=NULL, ...) {
