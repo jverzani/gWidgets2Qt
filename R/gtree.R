@@ -27,6 +27,13 @@ NULL
 GTreeBase <- setRefClass("GTreeBase",
                          contains="GWidget",
                          methods=list(
+                           init_model=function(DF) {
+                             "Initialize model. Need to add in number of column and names"
+                             model <- Qt$QStandardItemModel(rows=0, columns=ncol(DF))
+                             model$setHorizontalHeaderLabels(c("", names(DF)))
+                             widget$setModel(model)
+                             model$setParent(widget) # avoid early GC
+                           },
                            path_from_index=function(idx, ...) {
                              "convert index to item, then call path_from_item"
                              item <- widget$model()$itemFromIndex(idx)
@@ -261,10 +268,7 @@ GTree <- setRefClass("GTree",
                        init_model=function() {
                          "Initialize model. Need to add in number of column and names"
                          DF <- offspring_pieces(character(0))$DF
-                         model <- Qt$QStandardItemModel(rows=0, columns=ncol(DF))
-                         model$setHorizontalHeaderLabels(names(DF))
-                         widget$setModel(model)
-                         model$setParent(widget) # avoid early GC
+                         callSuper("init_model", DF)
                        },
                         add_offspring=function(path, item=NULL) {
                              "Helper: add offspring for the path at the item"
@@ -328,3 +332,77 @@ GTree <- setRefClass("GTree",
                          sapply(cur_selection, set_index)
                        }
                        ))
+
+
+
+
+GTreeDataFrame <- setRefClass("GTreeDataFrame",
+                              contains="GTreeBase",
+                              fields=list(
+                                idx="numeric"
+                                ),
+                              methods=list(
+                                initialize=function(DF, INDICES,
+                                  multiple = FALSE,
+                                  handler=NULL, action=NULL, container=NULL, ...) {
+                                  
+                                  ## check that INDICES are numeric or in names
+                                  if(missing(INDICES))
+                                    stop(gettext("INDICES are required. May be of length 1 or more"))
+                                  if(is.numeric(INDICES)) {
+                                    INDICES <- as.integer(INDICES)
+                                  } else if(is.character(INDICES)) {
+                                    if(!all(INDICES %in% names(DF)))
+                                      stop(gettext("INDICES are numeric index or subset of names"))
+                                    INDICES <- match(INDICES, names(DF))
+                                  } else {
+                                    stop(gettext("INDICES are numeric index or subset of names"))
+                                  }
+                                  idx <<- as.integer(INDICES)
+                                  
+                                  ## make tree widget
+                                  ## create view and style
+                                  widget <<-  Qt$QTreeView()
+                                  widget$setEditTriggers(Qt$QAbstractItemView$NoEditTriggers)
+                                  widget$setSelectionBehavior(Qt$QAbstractItemView$SelectRows)
+                                  initFields(block=widget,
+                                             change_signal="activated")
+                                  set_multiple(multiple)
+
+                                  items <- DF[-idx]
+                                  init_model(items)
+                                  
+                                  populate_tree(DF, idx)
+
+                                  
+                                  add_to_parent(container, .self, ...)
+                         
+                                  handler_id <<- add_handler_changed(handler, action)
+                         
+                                  callSuper(toolkit)
+                                },
+                                populate_tree=function(DF, ind) {
+                                  l <- split(DF, DF[[ind[1]]])
+                                  mapply(.self$populate_level, names(l), l, list(ind[-1]), list(root_node()))
+                                },
+                                root_node=function() {
+                                  "Return root node"
+                                  widget$model()$invisibleRootItem()
+                                },
+                                populate_level=function(nm, DF, ind, node) {
+                                  ## what to do. If ind has values, we recurse
+                                  if(length(ind) > 0) {
+                                    item <- Qt$QStandardItem(nm)
+                                    node$appendRow(item)
+                                    lst <- split(DF, factor(DF[[ ind[1] ]]))
+                                    mapply(.self$populate_level, names(lst), lst, list(ind[-1]), list(item))
+                                  } else {
+                                    sapply(seq_len(nrow(DF)), function(i) {
+                                      values <- sapply(DF[i,-idx, drop=FALSE], as.character)
+                                      items <- lapply(c(nm, values), Qt$QStandardItem)
+                                      node$appendRow(items)
+                                    })
+                                  } 
+                                }
+                                ))
+                                  
