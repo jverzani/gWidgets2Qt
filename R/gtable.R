@@ -340,8 +340,24 @@ GTable <- setRefClass("GTable",
                           add_handler_changed(handler, action=action, ...)
                         },
                         add_handler_double_clicked=function(handler, action=NULL, ...) {
-                         add_handler("doubleClicked", handler, action, ...)
+                          add_handler("doubleClicked", handler, action, ...)
+                        },
+                        column_decorator=function(handler) {
+                          "Decorator to pass back `column` component"
+                          force(handler)
+                          f <- function(idx, .self, ...) {
+                            handler(column=idx + 1, ..., .self)
+                          }
+                        },
+                        add_handler_column_clicked=function(handler, action=NULL, ...) {
+                          add_handler("sectionClicked", handler, action, decorator=.self$column_decorator,
+                                      emitter=widget$horizontalHeader())
+                        },
+                        add_handler_column_double_click=function(handler, action=NULL, ...) {
+                          add_handler("sectionDoubleClicked", handler, action, decorator=.self$column_decorator,
+                                      emitter=widget$horizontalHeader())
                         }
+                        
                     
 
                         ))
