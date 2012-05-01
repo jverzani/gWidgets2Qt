@@ -178,9 +178,10 @@ GText <- setRefClass("GText",
                        },
                        add_handler_blur=function(handler, action, ...) {
                          add_handler("focusOutEvent", handler, action, ...)
+                       },
+                       add_handler_selection_changed=function(handler, action=NULL, ...) {
+                         add_handler("selectionChanged", handler, action)
                        }
-
-                       
                        ))
 
 
