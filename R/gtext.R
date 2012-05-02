@@ -32,7 +32,7 @@ qsetMethod("focusInEvent", GQTextEdit, function(e) {
 qsetMethod("focusOutEvent", GQTextEdit, function(e) {
   obj$notify_observers(signal="focusOutEvent")
 })
-qsetMethod("keyPressEvent", GQTextEdit, function(e) {
+qsetMethod("keyReleaseEvent", GQTextEdit, function(e) {
 
   mods <- e$modifiers()                 # a flag
   modifiers <- character(0)
@@ -42,8 +42,8 @@ qsetMethod("keyPressEvent", GQTextEdit, function(e) {
   if(mods & Qt$Qt$AltModifier) modifiers <- c(modifiers, "Alt")
 
   
-  obj$notify_observers(signal="keyPressEvent", Key=e$key(), key=e$text(), modifier=mods)
-  super("keyPressEvent", e)
+  obj$notify_observers(signal="keyReleaseEvent", Key=e$key(), key=e$text(), modifier=mods)
+  super("keyReleaseEvent", e)
   
 })
 
@@ -68,6 +68,7 @@ GText <- setRefClass("GText",
 
                          
                          insert_text(text, where="beginning", font.attr=NULL, do.newline=FALSE)
+                         widget$textCursor()$clearSelection()    
                          set_font(font.attr) # buffer font
                          
                          add_to_parent(container, .self, ...)
@@ -88,11 +89,11 @@ GText <- setRefClass("GText",
                          ## XX split by \n?
                          return(val)
                        },
-                       set_value=function(value, ..., where=NULL) {
+                       set_value=function(value, ..., where=NULL, do.newline) {
                          "Replace all text, pasted together with newline"
                          widget$clear()
                          value <- paste(value, collapse="\n")
-                         insert_text(value, where="beginning", ...)
+                         insert_text(value, where="beginning", ..., do.newline=FALSE)
                        },
                        get_index = function(...) {
                          ## rongui request, if INDEX = TRUE return selected text
@@ -171,7 +172,7 @@ GText <- setRefClass("GText",
                          add_handler_keystroke(handler, action, ...)
                        },
                        add_handler_keystroke=function(handler, action, ...) {
-                         add_handler("keyPressEvent", handler, action, ...)
+                         add_handler("keyReleaseEvent", handler, action, ...)
                        },
                        add_handler_focus=function(handler, action, ...) {
                          add_handler("focusInEvent", handler, action, ...)
@@ -180,7 +181,18 @@ GText <- setRefClass("GText",
                          add_handler("focusOutEvent", handler, action, ...)
                        },
                        add_handler_selection_changed=function(handler, action=NULL, ...) {
-                         add_handler("selectionChanged", handler, action)
+                         signal <- "selectionChanged"
+                         add_handler(signal, handler, action)
+                         ## need to connect this up
+                         f <- function(...) {
+                           ## user.data is last value passed in
+                           l <- list(...);
+                           .self <- l[[length(l)]]
+                           .self$notify_observers(signal=signal, ...)
+                         }
+                         if(is.null(connected_signals[[signal, exact=TRUE]]))
+                           out <- try(qconnect(widget, signal, handler=f, user.data=.self), silent=TRUE)
+                         connected_signals[[signal]] <<- TRUE
                        }
                        ))
 
