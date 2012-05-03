@@ -27,8 +27,6 @@ NULL
 }
 
 
-qsetClass("GQTableView", Qt$QTableView)
-
 
 GDf <- setRefClass("GDf",
                    contains="GWidget",
