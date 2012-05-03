@@ -34,6 +34,8 @@ qsetMethod("focusOutEvent", GQTextEdit, function(e) {
 })
 qsetMethod("keyReleaseEvent", GQTextEdit, function(e) {
 
+  super("keyReleaseEvent", e)
+  ## run this last
   mods <- e$modifiers()                 # a flag
   modifiers <- character(0)
   if(mods & Qt$Qt$ShiftModifier) modifiers <- c(modifiers, "Shift")
@@ -42,8 +44,7 @@ qsetMethod("keyReleaseEvent", GQTextEdit, function(e) {
   if(mods & Qt$Qt$AltModifier) modifiers <- c(modifiers, "Alt")
 
   
-  obj$notify_observers(signal="keyReleaseEvent", Key=e$key(), key=e$text(), modifier=mods)
-  super("keyReleaseEvent", e)
+  obj$notify_observers(signal="keyReleaseEvent", newtext=this$text, Key=e$key(), key=e$text(), modifier=mods)
   
 })
 
