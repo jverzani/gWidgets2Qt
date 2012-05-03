@@ -67,6 +67,15 @@ GFormLayout <- setRefClass("GFormLayout",
                                "Return list of widget values"
                                sapply(children, svalue, simplify=FALSE) # not get_value, as that doesn't call coerce_with
                              },
+                             set_value=function(value, ...) {
+                               "value a named list matching children"
+                               value <- as.list(value)
+                               nms <- Filter(function(i) !is.na(match(i, names(children))), names(value))
+                               sapply(nms, function(nm) {
+                                 obj <- children[[nm]]
+                                 svalue(obj) <- value[[nm]]
+                               })
+                             },
                              ## some Qt methods
                              set_label_alignment=function(align) {
                                "Set alignment of label"
