@@ -26,7 +26,7 @@ qsetMethod("focusOutEvent", GQLineEdit, function(e) {
   obj$notify_observers(signal="focusOutEvent")
   obj$invoke_change_handler()
 })
-qsetMethod("keyPressEvent", GQLineEdit, function(e) {
+qsetMethod("keyReleaseEvent", GQLineEdit, function(e) {
 
   mods <- e$modifiers()                 # a flag
   modifiers <- character(0)
@@ -36,8 +36,8 @@ qsetMethod("keyPressEvent", GQLineEdit, function(e) {
   if(mods & Qt$Qt$AltModifier) modifiers <- c(modifiers, "Alt")
 
   
-  obj$notify_observers(signal="keyPressEvent", Key=e$key(), key=e$text(), modifier=mods)
-  super("keyPressEvent", e)
+  obj$notify_observers(signal="keyReleaseEvent", Key=e$key(), key=e$text(), modifier=mods)
+  super("keyReleaseEvent", e)
   
 })
 
@@ -229,8 +229,9 @@ GEdit <- setRefClass("GEdit",
                               },
 
                               ## Handlers
+                              connect_to_toolkit_signal=function(...) {},
                               add_handler_keystroke=function(handler, action=NULL, ...) {
-                                add_handler("keyPressEvent", handler, action, ...)
+                                add_handler("keyReleaseEvent", handler, action, ...)
                               },
                               add_handler_focus=function(handler, action, ...) {
                                 add_handler("focusInEvent", handler, action, ...)
