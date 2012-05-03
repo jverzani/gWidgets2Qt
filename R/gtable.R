@@ -29,6 +29,20 @@ NULL
              container=container ,...)
 }
 
+qsetClass("GQTableView", Qt$QTableView)
+qsetProperty("obj", GQTableView)
+qsetMethod("setObj", GQTableView, function(value) this$obj <- value)
+qsetMethod("mouseDoubleClickEvent", GQTableView, function(e) {
+  obj$notify_observers(signal="double-click")
+})
+qsetMethod("keyPressEvent", GQTableView, function(e) {
+  if(e$key() == Qt$Qt$Key_Return) 
+    obj$notify_observers(signal="double-click")
+  super("keyPressEvent", e)
+})
+
+
+
 ##' Class for gtable widget
 ##'
 ##' This \code{GTable} class for Qt implements a few additional reference
@@ -56,7 +70,10 @@ GTable <- setRefClass("GTable",
 
                                 
                                 ## setup widget
-                                widget <<- Qt$QTableView()
+                                ##widget <<- Qt$QTableView()
+                                widget <<- GQTableView()
+                                widget$setObj(.self)
+                                
                                 ## customize widget
                                 delegate <- qrTextFormattingDelegate(widget) # pass view as parent or store reference
                                 widget$setItemDelegate(delegate)
@@ -173,10 +190,15 @@ GTable <- setRefClass("GTable",
                           }
                         },
                         set_visible=function(value, ...) {
+                          cur_index <- get_index()
+                          
                           m <- get_dim()[1]
                           if(m >= 1) {
                             value <- rep(value, length.out=m)
                             mapply(widget$setRowHidden, seq_len(m) -1L, !value)
+
+                            cur_index <- match(which(value), cur_index)
+                            set_index(cur_index)
                           }
                         },
                         get_names=function(...) {
@@ -324,6 +346,14 @@ GTable <- setRefClass("GTable",
                         },
                         ## Handlers
                         add_handler_changed=function(handler, action=NULL, ...) {
+                          "Use double click or return key to select"
+                          if(is_handler(handler)) {
+                            o <- gWidgets2:::observer(.self, handler, action)
+                            invisible(add_observer(o, "double-click"))
+                          }
+                        },
+                        add_handler_selection_changed=function(handler, action=NULL,
+                          ...) {
                           ## selection changed
                           ## when selection model emits selectionChanged emitter is different
                           decorator <- function(handler) {
@@ -350,11 +380,13 @@ GTable <- setRefClass("GTable",
                           }
                         },
                         add_handler_column_clicked=function(handler, action=NULL, ...) {
-                          add_handler("sectionClicked", handler, action, decorator=.self$column_decorator,
+                          add_handler("sectionClicked", handler, action,
+                                      decorator=.self$column_decorator,
                                       emitter=widget$horizontalHeader())
                         },
                         add_handler_column_double_click=function(handler, action=NULL, ...) {
-                          add_handler("sectionDoubleClicked", handler, action, decorator=.self$column_decorator,
+                          add_handler("sectionDoubleClicked", handler, action,
+                                      decorator=.self$column_decorator,
                                       emitter=widget$horizontalHeader())
                         }
                         
