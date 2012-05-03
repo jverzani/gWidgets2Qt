@@ -137,8 +137,8 @@ GWindow <- setRefClass("GWindow",
                                 "close window"
                                 widget$close()
                                 widget$setParent(NULL)
-                                ## Do I need this? It makes `isExtant` work, but might cause issues with stability
-                                widget[["~QWidget"]]()
+                                ## would like to do ~QWindow to destroy, but that
+                                ## proves unstable.
                               },
                               ##
                               ## add methods
