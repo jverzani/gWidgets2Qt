@@ -61,123 +61,123 @@ GTreeBase <- setRefClass("GTreeBase",
                              if(return_index) l$indices <- indices
                              return(l)
                            },
-                          
-                       
-                       set_selection_mode=function(mode=c("none", "single", "browse", "multiple", "extended")) {
-                         "Helper: Set the selection mode (from gtable)"
-                         sel_mode <- switch(match.arg(mode),
-                                            "none"   = Qt$QAbstractItemView$NoSelection,
-                                            "single" = Qt$QAbstractItemView$SingleSelection,
-                                            "browse" = Qt$QAbstractItemView$ContiguousSelection,
-                                            "multiple"=Qt$QAbstractItemView$MultiSelection,
-                                            "extended"=Qt$QAbstractItemView$ExtendedSelection)
-                         widget$setSelectionMode(sel_mode)
-                       },
-                       set_multiple=function(value) {
-                         set_selection_mode(ifelse(value, "multiple", "single"))
-                       },
-                       ## main interface
-                       get_value=function(drop=TRUE,...) {
-                         "Return path (by chosen col)"
-                         sel_model <- widget$selectionModel()
-                         selected_rows <- sel_model$selectedRows() # a list of QModelIndex
-                         if(length(selected_rows) == 0)
-                           return(NULL) # no selection XXX what return value? character(0)?
-                         out <- lapply(selected_rows, .self$path_from_index)
-                         out <- lapply(out, function(i) i$path)
-
-                         drop <- ifelse(is.null(drop), FALSE, drop)
-                         if(drop)
-                           out <- lapply(out, function(i) tail(i, n=1))
-                         
-                         if(length(out) == 1)
-                           return(out[[1]])
-                         else
-                           return(out)
-                       },
-                       set_value=function(value, ...) {
-                         "open path, set via match"
-                         ## this is trickier than it look
-                         
-                       },
-                       get_index = function(drop=FALSE, ...) {
-                         "get  index as integer vector"
-                         ## Shares *much* code with get_value (only i$indices below). Tighten up
-                         sel_model <- widget$selectionModel()
-                         selected_rows <- sel_model$selectedRows() # a list of QModelIndex
-                         if(length(selected_rows) == 0)
-                           return(NULL) # no selection XXX what return value? character(0)?
-                         out <- lapply(selected_rows, .self$path_from_index)
-                         out <- lapply(out, function(i) i$indices)
-
-                         drop <- ifelse(is.null(drop), FALSE, drop)
-                         if(drop)
-                           out <- lapply(out, function(i) tail(i, n=1))
-                         
-                         if(length(out) == 1)
-                           return(out[[1]])
-                         else
-                           return(out)
-                       },
-                       set_index = function(value,...) {
-                         "open to specifed index, if possible"
-                         ## value may be a list, here we recurse if it is
-                         if(is.list(value)) sapply(value, set_index)
-
-                         ## value is index vector
-                         model <- widget$model()
-                         node <- model$invisibleRootItem()
-                         while(length(value)) {
-                           child <- node$child(value[1] - 1)
-                           if(is.null(child))
-                             return()   # nothing to do, doesn't match
-                           ## open
-                           if(length(value) > 1) {
-                             idx <- model$indexFromItem(child)
-                             if(child$hasChildren())
-                               widget$expand(idx)
-                           }
                            
-                           node <- child
-                           value <- value[-1]
-                         }
+                           
+                           set_selection_mode=function(mode=c("none", "single", "browse", "multiple", "extended")) {
+                             "Helper: Set the selection mode (from gtable)"
+                             sel_mode <- switch(match.arg(mode),
+                                                "none"   = Qt$QAbstractItemView$NoSelection,
+                                                "single" = Qt$QAbstractItemView$SingleSelection,
+                                                "browse" = Qt$QAbstractItemView$ContiguousSelection,
+                                                "multiple"=Qt$QAbstractItemView$MultiSelection,
+                                                "extended"=Qt$QAbstractItemView$ExtendedSelection)
+                             widget$setSelectionMode(sel_mode)
+                           },
+                           set_multiple=function(value) {
+                             set_selection_mode(ifelse(value, "multiple", "single"))
+                           },
+                           ## main interface
+                           get_value=function(drop=TRUE,...) {
+                             "Return path (by chosen col)"
+                             sel_model <- widget$selectionModel()
+                             selected_rows <- sel_model$selectedRows() # a list of QModelIndex
+                             if(length(selected_rows) == 0)
+                               return(NULL) # no selection XXX what return value? character(0)?
+                             out <- lapply(selected_rows, .self$path_from_index)
+                             out <- lapply(out, function(i) i$path)
 
-                         ## select node
-                         item <- model$indexFromItem(node)
-                         sel_model <- widget$selectionModel()
-                         sel_model$select(item,
-                                          Qt$QItemSelectionModel$Select |
-                                          Qt$QItemSelectionModel$Rows |
-                                          Qt$QItemSelectionModel$Clear
-                                          )
-                         
-                         
-                       },
-                       get_items = function(i, j, ..., drop=TRUE) {
-                         "Get items in the selected row"
-                         out <- get_value(drop=FALSE)
-                         ## XXX clarify what this does ...
-                         out
-                       },
-                       set_items = function(value, i, j, ...) {
-                         stop(gettext("One sets items at construction through the x argument of offspring function"))
-                       },
-                       get_names=function() {
-                         "Get column names"
-                         model <- widget$model()
-                         sapply(1:model$columnCount(), function(i) model$horizontalHeaderItem(i-1)$data(0))
-                       },
-                       set_names=function(value) {
-                         ## Should be set via offspring, but it isn't so hard:
-                         widget$model()$setHorizontalHeaderLabels(value)
-                       },
-                      
-                       ## Some extra methods
-                       clear_selection=function() {
-                         sel_model <- widget$selectionModel()
-                         sel_model$clear()
-                       }
-                       ))
+                             drop <- ifelse(is.null(drop), FALSE, drop)
+                             if(drop)
+                               out <- lapply(out, function(i) tail(i, n=1))
+                             
+                             if(length(out) == 1)
+                               return(out[[1]])
+                             else
+                               return(out)
+                           },
+                           set_value=function(value, ...) {
+                             "open path, set via match"
+                             ## this is trickier than it look
+                             
+                           },
+                           get_index = function(drop=FALSE, ...) {
+                             "get  index as integer vector"
+                             ## Shares *much* code with get_value (only i$indices below). Tighten up
+                             sel_model <- widget$selectionModel()
+                             selected_rows <- sel_model$selectedRows() # a list of QModelIndex
+                             if(length(selected_rows) == 0)
+                               return(NULL) # no selection XXX what return value? character(0)?
+                             out <- lapply(selected_rows, .self$path_from_index)
+                             out <- lapply(out, function(i) i$indices)
+
+                             drop <- ifelse(is.null(drop), FALSE, drop)
+                             if(drop)
+                               out <- lapply(out, function(i) tail(i, n=1))
+                             
+                             if(length(out) == 1)
+                               return(out[[1]])
+                             else
+                               return(out)
+                           },
+                           set_index = function(value,...) {
+                             "open to specifed index, if possible"
+                             ## value may be a list, here we recurse if it is
+                             if(is.list(value)) sapply(value, set_index)
+
+                             ## value is index vector
+                             model <- widget$model()
+                             node <- model$invisibleRootItem()
+                             while(length(value)) {
+                               child <- node$child(value[1] - 1)
+                               if(is.null(child))
+                                 return()   # nothing to do, doesn't match
+                               ## open
+                               if(length(value) > 1) {
+                                 idx <- model$indexFromItem(child)
+                                 if(child$hasChildren())
+                                   widget$expand(idx)
+                               }
+                               
+                               node <- child
+                               value <- value[-1]
+                             }
+
+                             ## select node
+                             item <- model$indexFromItem(node)
+                             sel_model <- widget$selectionModel()
+                             sel_model$select(item,
+                                              Qt$QItemSelectionModel$Select |
+                                              Qt$QItemSelectionModel$Rows |
+                                              Qt$QItemSelectionModel$Clear
+                                              )
+                             
+                             
+                           },
+                           get_items = function(i, j, ..., drop=TRUE) {
+                             "Get items in the selected row"
+                             out <- get_value(drop=FALSE)
+                             ## XXX clarify what this does ...
+                             out
+                           },
+                           set_items = function(value, i, j, ...) {
+                             stop(gettext("One sets items at construction through the x argument of offspring function"))
+                           },
+                           get_names=function() {
+                             "Get column names"
+                             model <- widget$model()
+                             sapply(1:model$columnCount(), function(i) model$horizontalHeaderItem(i-1)$data(0))
+                           },
+                           set_names=function(value) {
+                             ## Should be set via offspring, but it isn't so hard:
+                             widget$model()$setHorizontalHeaderLabels(value)
+                           },
+                           
+                           ## Some extra methods
+                           clear_selection=function() {
+                             sel_model <- widget$selectionModel()
+                             sel_model$clear()
+                           }
+                           ))
 
 
 ## C;ass for GTree and the whole offspring parameterization
@@ -265,10 +265,11 @@ GTree <- setRefClass("GTree",
                          
                          callSuper(toolkit)
                        },
-                       init_model=function() {
+                       init_model=function(DF) {
                          "Initialize model. Need to add in number of column and names"
-                         DF <- offspring_pieces(character(0))$DF
-                         callSuper("init_model", DF)
+                         if(missing(DF))
+                           DF <- offspring_pieces(character(0))$DF
+                         callSuper(DF)
                        },
                         add_offspring=function(path, item=NULL) {
                              "Helper: add offspring for the path at the item"
