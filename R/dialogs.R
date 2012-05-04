@@ -211,7 +211,7 @@ GBasicDialog <- setRefClass("GBasicDialog",
                         ...) {
 
                         if(!is.null(parent))
-                          widget <<- BasicDialog(getParent(parent), title, do.buttons)
+                          widget <<- BasicDialog(getTopLevel(parent)$widget, title, do.buttons)
                         else
                           widget <<- BasicDialog(NULL, title, do.buttons)
 
