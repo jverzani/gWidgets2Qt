@@ -84,7 +84,7 @@ GBoxContainer <- setRefClass("GBoxContainer",
 
                                  sw
                                },
-                               ## svalue (spacing is between child space, not borderwidth)
+                               ## svalue (spacing is between-child space, not borderwidth)
                                get_value=function(...) {
                                  widget$spacing
                                },
