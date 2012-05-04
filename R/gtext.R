@@ -169,8 +169,8 @@ GText <- setRefClass("GText",
                            widget$setTextCursor(tc)
                          }
                        },
+                       get_editable=function(...) !widget$isReadOnly(),
                        set_editable=function(value, ...) widget$setReadOnly(!value),
-                       get_editable=function(value, ...) !widget$isReadOnly(),
                        set_word_wrap=function(value, ...) {
                          "Set word wrap mode"
                          value <- switch(value,
