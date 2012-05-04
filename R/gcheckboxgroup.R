@@ -191,21 +191,21 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                },
                               connect_to_toolkit_signal=function(...) {},
                               get_value=function(drop=TRUE, ...) {
-                                get_items(get_index())
+                                get_items()[get_index()]
                               },
                               set_value=function(value,  drop=TRUE, ...) {
                                 ind <- match(value, get_items())
                                 ind <- ind[!is.na(ind)]
                                 set_index(ind)
                               },
-                              get_index = function(...) {
+                              get_index = function(i, ...) {
                                 model <- widget$model()
                                 if(model$rowCount() == 0) return(integer(0))
                                 
                                 indices <- sapply(1:model$rowCount(), function(i) model$index(i-1,0))
                                 items <- sapply(indices, function(idx) model$itemFromIndex(idx))
                                 checked <- sapply(items, function(item) item$checkState() ==  Qt$Qt$Checked)
-                                which(checked)
+                                which(checked)[i]
                               },
                               set_index=function(value, ...) {
                                 block_observers()
@@ -252,7 +252,7 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                     return(x)
                                   
                                   for(i in 1:m) {
-                                    item <- Qt$QStandardItem(value[i,1])
+                                    item <- Qt$QStandardItem(as.character(value[i,1]))
                                     item$setCheckable(TRUE)
                                     ## icons
                                     if(ncol(value) >=2) {
