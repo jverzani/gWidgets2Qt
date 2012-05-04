@@ -56,6 +56,7 @@ GButtonGroupWidget <- setRefClass("GButtonGroupWidget",
                                       })
                                     },
                                     set_items = function(value, i, ...) {
+                                      value <- as.character(value)
                                       if(missing(i)) {
                                         remove_old_items()
                                         ## make widgets, add to button group, layout
@@ -294,8 +295,11 @@ GCheckboxGroupTable <-  setRefClass("GCheckboxGroupTable",
                                   
                               },
                               get_length = function() {
-                                  "Number of items to choose from"
-                                  widget$model()$rowCount()
-                                }
-
+                                "Number of items to choose from"
+                                widget$model()$rowCount()
+                              },
+                              set_visible=function(value, ...) {
+                                message("called set visible")
+                              }
+                              
                               ))
