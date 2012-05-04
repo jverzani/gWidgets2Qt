@@ -160,13 +160,26 @@ GText <- setRefClass("GText",
                            if(!is.null(value$color))
                              widget$setTextColor(Qt$QColor(value$color))
                          } else {
-                           widget$selectAll()
-                           widget$setCurrentFont(fnt)
+                           #widget$selectAll()
+                           #widget$setCurrentFont(fnt)
+                           widget$document()$setDefaultFont(fnt)
                            if(!is.null(value$color))
                              widget$setTextColor(Qt$QColor(value$color))
                            tc$clearSelection()
                            widget$setTextCursor(tc)
                          }
+                       },
+                       set_editable=function(value, ...) widget$setReadOnly(!value),
+                       get_editable=function(value, ...) !widget$isReadOnly(),
+                       set_word_wrap=function(value, ...) {
+                         "Set word wrap mode"
+                         value <- switch(value,
+                                         "none"=Qt$QTextOption$NoWrap,
+                                         "wrap"=Qt$QTextOption$WordWrap,
+                                         "manual"=Qt$QTextOption$ManualWrap,
+                                         "anywhere"=Qt$QTextOption$WrapAnywhere,
+                                         QTextOption::WrapAtWordBoundaryOrAnywhere)
+                         widget$setWordWrapMode(value)
                        },
                        connect_to_toolkit_signal=function(...) {}, # override
                        add_handler_changed=function(handler, action, ...) {
