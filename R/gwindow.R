@@ -19,8 +19,8 @@ qsetProperty("obj", GQMainWindow)
 qsetProperty("action", GQMainWindow)
 qsetProperty("unrealize_handler", GQMainWindow)
 
-## Not quite ideal. If window closed via dispose, then isExtant will be FALSE. However,
-## if closed via window manager event, no such luck
+## Not quite ideal. Want to make widget fail isExtant when closed, but no such luck
+## if closed via window manager event okay, but not through dispose
 qsetMethod("closeEvent", GQMainWindow, function(event) {
   ##
   .obj$notify_observers(signal="destroy-event") # add_handler_destroy
@@ -66,6 +66,8 @@ GWindow <- setRefClass("GWindow",
                                   block <<- widget <<- GQMainWindow()
                                 }
                                 widget$obj <<- .self
+                                ## This might be an issue
+                                ##widget$setAttribute(Qt$Qt$WA_DeleteOnClose)
                                 
                                 set_value(title)
                                 initFields(toolkit=toolkit
@@ -153,6 +155,9 @@ GWindow <- setRefClass("GWindow",
                                 } else if(is(child, "GToolBar")) {
                                   add_toolbar(child)
                                 } else {
+                                  if(is(child, "GBoxContainer"))
+                                    child$set_borderwidth(11L)
+                                  
                                   widget$setCentralWidget(getBlock(child))
                                   child$set_parent(.self)
                                   children <<- list(child)
