@@ -220,9 +220,12 @@ GEdit <- setRefClass("GEdit",
                                 "Can we actually edit widget?"
                                 widget$getEditable()
                               },
-                              set_editable = function(value, j) {
-                                widget$setEditable(as.logical(value))
-                              },
+                              get_editable=function(...) !widget$isReadOnly(),
+                              set_editable=function(value, ...) widget$setReadOnly(!value),
+                              can_undo=function() widget$undoAvailable,
+                              undo = function() widget$undo(),
+                              can_redo=function() widget$redoAvailable,
+                              redo = function() widget$redo(),
                               set_init_txt=function(txt) {
                                 "set initial text, gray out"
                                 widget$setPlaceholderText(txt)
