@@ -25,7 +25,8 @@ GExpandGroup <- setRefClass("GExpandGroup",
                               label="ANY",
                               inner="ANY",
                               is_open="logical",
-                              "markup"="logical"
+                              "markup"="logical",
+                              old_geometry="ANY"
                               ),
                             methods=list(
                               initialize=function(toolkit=NULL, text="", markup=FALSE, horizontal=TRUE, handler, action, container=NULL, ..., expand=TRUE, fill=TRUE) {
@@ -39,13 +40,16 @@ GExpandGroup <- setRefClass("GExpandGroup",
 
                                 initFields(change_signal="toggled", # none really
                                            is_open=TRUE,
+                                           
                                            markup=markup # ignored
                                            )
                                 set_names(text)
-                                set_visible(TRUE)
 
                                 handler_id <<- add_handler_changed(handler, action)
                                 add_to_parent(container, .self, expand, fill, ...)
+#                                old_geometry <<- inner$geometry
+                                
+                                set_visible(TRUE)
 
                                 callSuper(toolkit, horizontal=horizontal, ...)
                               },
@@ -85,13 +89,17 @@ GExpandGroup <- setRefClass("GExpandGroup",
                                   value <- !is_open # toggle
 
                                 if(value) {
+#                                  inner$setGeometry(old_geometry)
                                   inner$show()
                                   trigger$setIcon(as_qicon(Qt$QStyle$SP_TitleBarShadeButton))
                                 } else {
+#                                  rect <- old_geometry <<- inner$geometry
+#                                  rect$setHeight(0L)
+#                                  inner$setGeometry(rect)
                                   inner$hide()
                                   trigger$setIcon(as_qicon(Qt$QStyle$SP_TitleBarUnshadeButton))
-                                  block$update()
-                                  block$updateGeometry()
+                                  inner$update()
+                                  inner$updateGeometry()
                                 }
                                 ## update geometry?
                                 block
