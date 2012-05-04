@@ -66,7 +66,11 @@ GRadioButtons <- setRefClass("GRadioButtons",
                             value <- which(value) # numeric now
                           btns <- button_group$buttons()
                           btns[[value]]$setChecked(TRUE)
-                        }
+                        },
+                        set_enabled=function(value, ...) {
+                          block$setEnabled(as.logical(value))
+                        },
+                        get_enabled=function(...) block$enabled
                         ))
 
 
