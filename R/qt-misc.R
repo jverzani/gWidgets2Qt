@@ -19,6 +19,14 @@ getWidget.RQtObject <- function(obj) obj
 ##' @S3method getBlock RQtObject
 getBlock.RQtObject <- function(obj) obj
 
+##' S3 method for stopping getTopLevel
+##'
+##' @param obj an RQtObject
+##' @export
+##' @method getTopLevel RQtObject
+##' @S3method getTopLevel RQtObject
+getTopLevel.RQtObject <- function(obj) obj
+
 
 
 
@@ -91,4 +99,16 @@ makeQTextCharFormat<- function(font.attr) {
   tcf <- Qt$QTextCharFormat()
   tcf$setFont(makeQFont(font.attr))
   tcf
+}
+
+
+## which modifier?
+whichModifiers <- function(e) {
+  mods <- e$modifiers()                 # a flag
+  modifiers <- character(0)
+  if(mods & Qt$Qt$ShiftModifier) modifiers <- c(modifiers, "Shift")
+  if(mods & Qt$Qt$ControlModifier) modifiers <- c(modifiers, "Ctrl")
+  if(mods & Qt$Qt$MetaModifier) modifiers <- c(modifiers, "Meta")
+  if(mods & Qt$Qt$AltModifier) modifiers <- c(modifiers, "Alt")
+  modifiers
 }
