@@ -1,4 +1,5 @@
 ##' @include GWidget.R
+##' @include qt-misc.R
 NULL
 
 ##' Toolkit constructor
@@ -39,7 +40,7 @@ qsetMethod("setObject", OurQGraphicsScene, function(obj) this$object <- obj)
 ## call the clickHandler if present
 qsetMethod("mousePressEvent", OurQGraphicsScene, function(e) {
   
-  this$lastClick <- e$buttonDownScenePos(e$button())
+  this$lastClick <- e$buttonDownScenePos(e$button()) ## record for mouse relase use
   this$buttonPress <- TRUE
 
   w <- this$width()           
@@ -49,7 +50,7 @@ qsetMethod("mousePressEvent", OurQGraphicsScene, function(e) {
   x <- grconvertX(X/w, from="ndc", to="user")
   y <- grconvertY((ht-Y)/ht, from="ndc", to="user")
 
-  object$notify_observers(signal="mousePressEvent", x=x, y=y, width=w, height=ht, X=X, Y=Y)
+  object$notify_observers(signal="mousePressEvent", x=x, y=y, width=w, height=ht, X=X, Y=Y, modifiers=whichModifiers(e))
 
   super("mousePressEvent", e)
 })
@@ -75,9 +76,26 @@ qsetMethod("mouseReleaseEvent", OurQGraphicsScene, function(e) {
 
   ## call if we moved more than 10 blocks (in pixels)
   if(abs(diff(X)) + abs(diff(Y)) > 10)
-    object$notify_observers(signal="mouseReleaseEvent", x=x, y=y, width=w, height=ht, X=X, Y=Y)
+    object$notify_observers(signal="mouseReleaseEvent", x=x, y=y, width=w, height=ht, X=X, Y=Y, modifiers=whichModifiers(e))
 
   super("mouseReleaseEvent", e)
+})
+
+qsetMethod("mouseMoveEvent", OurQGraphicsScene, function(e) {
+
+  pos <- e$scenePos()
+  
+  w <- this$width()           
+  ht <- this$height()
+  X <- pos$x()
+  Y <- pos$y()
+  
+  x <- grconvertX(X/w, from="ndc", to="user")
+  y <- grconvertY((ht-Y)/ht, from="ndc", to="user")
+
+  object$notify_observers(signal="mouseMoveEvent", x=x, y=y, width=w, height=ht, X=X, Y=Y, modifiers=whichModifiers(e))
+
+  super("mouseMoveEvent", e)
 })
 
 
@@ -85,7 +103,6 @@ qsetMethod("mouseReleaseEvent", OurQGraphicsScene, function(e) {
 
 ## make a class for a graphics device. This allows
 ## one to write methods for mouse handlers etc.
-## Had trouble using creategwClass, although that would have been preferable
 qsetClass("QtDevice", Qt$QGraphicsView)
 
 ## set gWidgets object that this class is the widget of. (self reference)
@@ -233,7 +250,13 @@ GGraphics <- setRefClass("GGraphics",
                            },
                            ## handlers
                            add_handler_clicked=function(handler, action=NULL, ...) {
-                             add_handler("mouseReleaseEvent", handler, action, ...)
+                             add_handler("mousePressEvent", handler, action, ...)
+                           },
+                           add_handler_selection_changed=function(handler, action=NULL, ...) {
+                             add_handler_changed(handler, action, ...)
+                           },
+                           add_handler_mouse_motion=function(handler, action=NULL, ...) {
+                             add_handler("mouseMoveEvent", handler, action, ...)
                            },
                            ## override, connected to in class
                            connect_to_toolkit_signal=function(...) {}
