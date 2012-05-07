@@ -69,6 +69,10 @@ GDf <- setRefClass("GDf",
                        callSuper(toolkit)
                      },
                      ## methods
+                     save_data=function(nm) {
+                       "Save data to variable nm in global workspace"
+                       assign(nm, get_items(), .GlobalEnv)
+                     },
                      get_value=function(drop=TRUE, ...) {
                        "Geet selected values"
                        l <- get_selected()
