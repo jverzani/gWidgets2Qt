@@ -45,177 +45,179 @@
 \alias{addToStockIcons}
 \title{add stock icons}
 \usage{
-  \method{.addStockIcons}{guiWidgetsToolkitQt}(toolkit,
+  \method{.addStockIcons}{guiWidgetsToolkitQt} (toolkit,
     iconNames, iconFiles, ...)
 
-  \method{.getStockIcons}{guiWidgetsToolkitQt}(toolkit,
+  \method{.getStockIcons}{guiWidgetsToolkitQt} (toolkit,
     ...)
 
-  \method{.getStockIconByName}{guiWidgetsToolkitQt}(toolkit,
-    name, ...)
+  \method{.getStockIconByName}{guiWidgetsToolkitQt}
+    (toolkit, name, ...)
 
   addToStockIcons(iconNames, iconFiles)
 
-  \method{.stockIconFromObject}{guiWidgetsToolkitQt}(toolkit,
-    obj, ...)
+  \method{.stockIconFromObject}{guiWidgetsToolkitQt}
+    (toolkit, obj, ...)
 
-  \method{.gwindow}{guiWidgetsToolkitQt}(toolkit, title,
+  \method{.gwindow}{guiWidgetsToolkitQt} (toolkit, title,
     visible, name, width, height, parent, handler, action,
     ...)
 
-  \method{.gaction}{guiWidgetsToolkitQt}(toolkit, label,
+  \method{.gaction}{guiWidgetsToolkitQt} (toolkit, label,
     tooltip = NULL, icon = NULL, key.accel = NULL,
     handler = NULL, action = NULL, parent = NULL, ...)
 
-  \method{.gcalendar}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gcalendar}{guiWidgetsToolkitQt} (toolkit,
     text = "", format = "\%Y-\%m-\%d", handler = NULL,
     action = NULL, container = NULL, ...)
 
-  \method{.gcheckbox}{guiWidgetsToolkitQt}(toolkit, text,
+  \method{.gcheckbox}{guiWidgetsToolkitQt} (toolkit, text,
     checked = FALSE, use.togglebutton = FALSE,
     handler = NULL, action = NULL, container = NULL, ...,
     parent = NULL)
 
-  \method{.gcheckboxgroup}{guiWidgetsToolkitQt}(toolkit = NULL,
-    items, checked = FALSE, horizontal = FALSE,
-    use.table = FALSE, handler = NULL, action = NULL,
-    container = NULL, ...)
+  \method{.gcheckboxgroup}{guiWidgetsToolkitQt}
+    (toolkit = NULL, items, checked = FALSE,
+    horizontal = FALSE, use.table = FALSE, handler = NULL,
+    action = NULL, container = NULL, ...)
 
-  \method{.gcombobox}{guiWidgetsToolkitQt}(toolkit, items,
+  \method{.gcombobox}{guiWidgetsToolkitQt} (toolkit, items,
     selected = 1, editable = FALSE, coerce.with = NULL,
     handler = NULL, action = NULL, container = NULL, ...)
 
-  \method{.gtable}{guiWidgetsToolkitQt}(toolkit, items,
+  \method{.gtable}{guiWidgetsToolkitQt} (toolkit, items,
     multiple = FALSE, chosen.col = 1, icon.col = NULL,
     tooltip.col = NULL, handler = NULL, action = NULL,
     container = NULL, ...)
 
-  \method{.gmenu}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gmenu}{guiWidgetsToolkitQt} (toolkit,
     menu.list = list(), popup = FALSE, container = NULL,
     ...)
 
-  \method{.gmessage}{guiWidgetsToolkitQt}(toolkit, msg,
+  \method{.gmessage}{guiWidgetsToolkitQt} (toolkit, msg,
     title = "message",
     icon = c("info", "warning", "error", "question"),
     parent = NULL, ...)
 
-  \method{.gconfirm}{guiWidgetsToolkitQt}(toolkit, msg,
+  \method{.gconfirm}{guiWidgetsToolkitQt} (toolkit, msg,
     title = "Confirm",
     icon = c("info", "warning", "error", "question"),
     parent = NULL, ...)
 
-  \method{.ginput}{guiWidgetsToolkitQt}(toolkit, msg,
+  \method{.ginput}{guiWidgetsToolkitQt} (toolkit, msg,
     text = "", title = "Input",
     icon = c("info", "warning", "error", "question"),
     parent = NULL, ...)
 
-  \method{.gbasicdialog}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gbasicdialog}{guiWidgetsToolkitQt} (toolkit,
     title = "Dialog", parent = NULL, do.buttons = TRUE,
     handler = NULL, action = NULL, ...)
 
-  \method{.galert}{guiWidgetsToolkitQt}(toolkit, msg,
+  \method{.galert}{guiWidgetsToolkitQt} (toolkit, msg,
     title = "message", delay = 3, parent = NULL, ...)
 
-  \method{.gdf}{guiWidgetsToolkitQt}(toolkit, items = NULL,
-    handler = NULL, action = NULL, container = NULL, ...)
+  \method{.gdf}{guiWidgetsToolkitQt} (toolkit,
+    items = NULL, handler = NULL, action = NULL,
+    container = NULL, ...)
 
-  \method{.gedit}{guiWidgetsToolkitQt}(toolkit, text = "",
+  \method{.gedit}{guiWidgetsToolkitQt} (toolkit, text = "",
     width = 25, coerce.with = NULL,
     initial.msg = initial.msg, handler = NULL,
     action = NULL, container = NULL, ...)
 
-  \method{.gfile}{guiWidgetsToolkitQt}(toolkit, text = "",
+  \method{.gfile}{guiWidgetsToolkitQt} (toolkit, text = "",
     type = c("open", "save", "selectdir"),
     initial.filename = NULL,
     filter = list(`All files` = list(patterns = c("*")), `R files` = list(patterns = c("*.R", "*.Rdata")), `text files` = list(mime.types = c("text/plain"))),
     multi = FALSE, ...)
 
-  \method{.gfilebrowse}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gfilebrowse}{guiWidgetsToolkitQt} (toolkit,
     text = "", type = c("open", "save", "selectdir"),
     initial.filename = NULL, filter = list(), quote = TRUE,
     handler = NULL, action = NULL, container = NULL, ...)
 
-  \method{.gformlayout}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gformlayout}{guiWidgetsToolkitQt} (toolkit,
     align = "left", spacing = 5, container = NULL, ...)
 
-  \method{.ggraphics}{guiWidgetsToolkitQt}(toolkit,
+  \method{.ggraphics}{guiWidgetsToolkitQt} (toolkit,
     width = dpi * 6, height = dpi * 6, dpi = 75, ps = 12,
     handler = NULL, action = NULL, container = NULL, ...)
 
-  \method{.ghtml}{guiWidgetsToolkitQt}(toolkit, x,
+  \method{.ghtml}{guiWidgetsToolkitQt} (toolkit, x,
     container, ...)
 
-  \method{.gimage}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gimage}{guiWidgetsToolkitQt} (toolkit,
     filename = "", dirname = "", stock.id = NULL,
     size = "", handler = NULL, action = NULL,
     container = NULL, ...)
 
-  \method{.glayout}{guiWidgetsToolkitQt}(toolkit,
+  \method{.glayout}{guiWidgetsToolkitQt} (toolkit,
     homogeneous = FALSE, spacing = 10, container = NULL,
     ...)
 
-  \method{.gnotebook}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gnotebook}{guiWidgetsToolkitQt} (toolkit,
     tab.pos = 3, container = NULL, ...)
 
-  \method{.gpanedgroup}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gpanedgroup}{guiWidgetsToolkitQt} (toolkit,
     horizontal = TRUE, container = NULL, ...)
 
-  \method{.gradio}{guiWidgetsToolkitQt}(toolkit, items,
+  \method{.gradio}{guiWidgetsToolkitQt} (toolkit, items,
     selected = 1, horizontal = FALSE, handler = NULL,
     action = NULL, container = NULL, ..., parent = NULL)
 
-  \method{.gseparator}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gseparator}{guiWidgetsToolkitQt} (toolkit,
     horizontal = TRUE, container = NULL, ...)
 
-  \method{.gslider}{guiWidgetsToolkitQt}(toolkit, from = 0,
-    to = 100, by = 1, value = from, horizontal = TRUE,
-    handler = NULL, action = NULL, container = NULL, ...)
+  \method{.gslider}{guiWidgetsToolkitQt} (toolkit,
+    from = 0, to = 100, by = 1, value = from,
+    horizontal = TRUE, handler = NULL, action = NULL,
+    container = NULL, ...)
 
-  \method{.gspinbutton}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gspinbutton}{guiWidgetsToolkitQt} (toolkit,
     from = 0, to = 10, by = 1, value = from, digits = 0,
     handler = NULL, action = NULL, container = NULL, ...)
 
-  \method{.gstackwidget}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gstackwidget}{guiWidgetsToolkitQt} (toolkit,
     container = NULL, ...)
 
-  \method{.gstatusbar}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gstatusbar}{guiWidgetsToolkitQt} (toolkit,
     text = "", container = NULL, ...)
 
-  \method{.gtext}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gtext}{guiWidgetsToolkitQt} (toolkit,
     text = NULL, width = NULL, height = 300,
     font.attr = NULL, wrap = TRUE, handler = NULL,
     action = NULL, container = NULL, ...)
 
-  \method{.gtimer}{guiWidgetsToolkitQt}(toolkit, ms, FUN,
+  \method{.gtimer}{guiWidgetsToolkitQt} (toolkit, ms, FUN,
     data = NULL, one.shot = FALSE, start = TRUE)
 
-  \method{.gtoolbar}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gtoolbar}{guiWidgetsToolkitQt} (toolkit,
     toolbar.list = list(),
     style = c("both", "icons", "text", "both-horiz"),
     container = NULL, ...)
 
-  \method{.gtree}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gtree}{guiWidgetsToolkitQt} (toolkit,
     offspring = NULL, offspring.data = NULL,
     chosen.col = 1, offspring.col = 2, icon.col = NULL,
     tooltip.col = NULL, multiple = FALSE, handler = NULL,
     action = NULL, container = NULL, ...)
 
-  \method{.gvarbrowser}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gvarbrowser}{guiWidgetsToolkitQt} (toolkit,
     handler = NULL, action = "summary", container = NULL,
     ...)
 
-  \method{.gbutton}{guiWidgetsToolkitQt}(toolkit, text,
+  \method{.gbutton}{guiWidgetsToolkitQt} (toolkit, text,
     handler, action, container, ...)
 
-  \method{.glabel}{guiWidgetsToolkitQt}(toolkit, text = "",
-    markup = FALSE, editable = FALSE, handler = NULL,
-    action = NULL, container = NULL, ...)
+  \method{.glabel}{guiWidgetsToolkitQt} (toolkit,
+    text = "", markup = FALSE, editable = FALSE,
+    handler = NULL, action = NULL, container = NULL, ...)
 
-  \method{.gframe}{guiWidgetsToolkitQt}(toolkit, text,
+  \method{.gframe}{guiWidgetsToolkitQt} (toolkit, text,
     markup, pos, horizontal = TRUE, spacing = 5,
     container = NULL, ...)
 
-  \method{.gexpandgroup}{guiWidgetsToolkitQt}(toolkit,
+  \method{.gexpandgroup}{guiWidgetsToolkitQt} (toolkit,
     text, markup, horizontal = TRUE, handler = NULL,
     action = NULL, container = NULL, ...)
 }

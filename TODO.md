@@ -1,6 +1,7 @@
 drag-and-drop
 popup menus
 DONE font<- (use qfont)
+dispose(gwindow()) and is_extant (no ~QWindow, then still extant.
 
 ## General
 fonts (styles, fonts objects)
@@ -47,7 +48,7 @@ DONE gspinbutton.R
 DONE gstatusbar.R
 NO WIDGET gsvg.R
 DONISH gtable.R (set\_names, sort, popup menu?)
-DONE gtext.R
+DONE gtext.R keyrelease event and svalue.
 DONE gtimer.R
 DONE gtoolbar.R
 DONE gtree.R: 

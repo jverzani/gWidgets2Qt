@@ -113,6 +113,7 @@ GBoxContainer <- setRefClass("GBoxContainer",
                                },
                                add_child = function(child, expand=FALSE, fill=NULL, anchor=NULL, ...) {
                                  "Add child to box container"
+
                                  
                                  ## @param expand logical or numeric indicating flex value
                                  ## @param fill logical or character (TRUE, FALSE, "x", "y", "both"=TRUE)
