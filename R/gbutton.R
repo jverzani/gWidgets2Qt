@@ -18,7 +18,8 @@ NULL
     GButtonBase$new(toolkit, text, handler, action, container, ...)
 }
 
-##' Button reference class
+## Button reference class
+## See set_menu method to turn into popup menu
 GButton <- setRefClass("GButton",
                             contains="GWidget",
                             fields=list(
@@ -45,6 +46,16 @@ GButton <- setRefClass("GButton",
                               },
                               get_value=function(index=TRUE, drop=TRUE, ...) {
                                 widget$text
+                              },
+                              set_menu=function(menu, ...) {
+                                "Set a menu popuup for the button. Qt specific"
+                                if(is.list(menu))
+                                  menu <- gmenu(menu, popup=TRUE)
+                                if(!is(menu, "GMenuPopup")) {
+                                  message("set_menu called with gmenu(..., popup=TRUE) object")
+                                  return()
+                                }
+                                widget$setMenu(menu$widget)
                               }
                               ))
 
@@ -57,7 +68,8 @@ GButtonBase <- setRefClass("GButtonBase",
                            initFields(block=widget,
                                       change_signal="clicked"
                                       )
-
+                           widget$setAutoDefault(TRUE)
+                           
                            ## fill hack
                            if(is(container, "GBoxContainer") && (missing(fill) || is.null(fill)))
                              fill <- "x"
@@ -80,8 +92,9 @@ GButtonAction <- setRefClass("GButtonAction",
                                initialize=function(toolkit,  action, container, ...) {
                                  widget <<- Qt$QPushButton()
                                  initFields(block=widget)
+                                 widget$setAutoDefault(TRUE)
                                  
-                                  add_to_parent(container, .self)
+                                 add_to_parent(container, .self)
                            
                                  a <- getWidget(action)
                                  widget$addAction(a)
