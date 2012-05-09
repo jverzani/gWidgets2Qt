@@ -169,7 +169,12 @@ GEdit <- setRefClass("GEdit",
                                 add_to_parent(container, .self, ..., fill=fill)
                                 
                                 handler_id <<- add_handler_changed(handler, action)
-
+                                add_handler_keystroke(handler=function(h, ...) {
+                                  if(h$Key == Qt$Qt$Key_Return) ## http://qt-project.org/doc/qt-4.8/qt.html#KeyboardModifier-enum
+                                    invoke_change_handler()
+                                })
+                                
+                                
                                 callSuper(toolkit)
                               },
                               set_value=function(value,drop=TRUE, ...) {
@@ -242,22 +247,6 @@ GEdit <- setRefClass("GEdit",
                               add_handler_blur=function(handler, action, ...) {
                                 add_handler("focusOutEvent", handler, action, ...)
                               },
-                              
-                              ## Handler: changed -> clicked
-                              ## add_handler_changed = function(handler, action=NULL, ...) {
-                              ##   if(missing(handler) || is.null(handler))
-                              ##     return()
-                              ##   f <- function(h, widget, event, ...) {
-                              ##     keyval <- event$GetKeyval()
-                              ##     if(keyval == GDK_Return) {
-                              ##       handler(h, widget, event, ...)
-                              ##       return(TRUE)
-                              ##     } else {
-                              ##       return(FALSE)
-                              ##     }
-                              ##   }
-                              ##   add_handler("activate", f, action=action, ...)
-                              ## },
                              
 
                               ## Validation methods
