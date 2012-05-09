@@ -248,26 +248,30 @@ GTable <- setRefClass("GTable",
                             qdataFrame(q_model)[i,j] <<- value
                           }
                         },
-                        extract_pieces=function(items) {
+                        extract_pieces=function(values) {
                           "Helper: return list of items:data.frame, icons, tooltips (possibly NULL for last)"
                           ## this is ugly, a better way?
+                          if(!is(values, "data.frame"))
+                            values <- data.frame(values, stringsAsFactors=FALSE)
+
+                          
                           if(is.null(icon_col)) {
                             if(is.null(tooltip_col)) {
-                              list(items=items, icons=NULL, tooltips=NULL)
+                              list(items=values, icons=NULL, tooltips=NULL)
                             } else {
-                              tooltips <- items[, tooltip_col]
-                              values <- items[, -tooltip_col]
+                              tooltips <- values[, tooltip_col]
+                              values <- values[, -tooltip_col, drop=FALSE]
                               list(items=values, icons=NULL, tooltips=tooltips)
                             }
                           } else {
                             if(is.null(tooltip_col)) {
-                              icons <- items[, icon_col]
-                              values <- items[, -icon_col]
+                              icons <- values[, icon_col]
+                              values <- values[, -icon_col, drop=FALSE]
                               list(items=values, icons=icons, tooltips=NULL)
                             } else {
-                              icons <- items[, icon_col]
-                              tooltips <- items[, tooltip_col]
-                              values <- items[, -c(icon_col, tooltip_col)]
+                              icons <- values[, icon_col]
+                              tooltips <- values[, tooltip_col]
+                              values <- values[, -c(icon_col, tooltip_col), drop=FALSE]
                               list(items=values, icons=icons, tooltips=tooltips)
                             }
                           }
