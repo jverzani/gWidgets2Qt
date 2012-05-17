@@ -374,7 +374,11 @@ GTable <- setRefClass("GTable",
                           add_handler_changed(handler, action=action, ...)
                         },
                         add_handler_double_clicked=function(handler, action=NULL, ...) {
-                          add_handler("doubleClicked", handler, action, ...)
+                          signal <- "double-click"
+                          if(is_handler(handler)) {
+                            o <- gWidgets2:::observer(.self, handler, action)
+                            invisible(add_observer(o, signal))
+                          }
                         },
                         column_decorator=function(handler) {
                           "Decorator to pass back `column` component"
