@@ -161,7 +161,9 @@ GFileBrowse <- setRefClass("GFileBrowse",
                                 callSuper(toolkit)
                               },
                               get_value=function( ...) {
-                                widget$text
+                                x <- widget$text
+                                Encoding(x) <- "UTF-8"
+                                x
                               },
                               set_value=function(value, ...) {
                                 ## should we check file.exists?
