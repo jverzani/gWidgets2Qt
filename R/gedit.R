@@ -120,8 +120,7 @@ GEdit <- setRefClass("GEdit",
                             fields=list(
                               completer="ANY",
                               model="ANY",
-                              validator="ANY",
-                              coerce_with="ANY"
+                              validator="ANY"
                               ),
                             methods=list(
                               initialize=function( toolkit=NULL,

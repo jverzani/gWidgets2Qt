@@ -3,10 +3,14 @@ NULL
 
 ##' Base class for widget objects.
 GWidget <- setRefClass("GWidget",
-                       fields=list(
-                         coerce_with="ANY"
-                         ),
-                       contains="GComponentObservable"
+                       contains="GComponentObservable",
+                       methods=list(
+                         initialize=function(..., coerce.with=NULL) {
+                           if(is.null(coerce_with) && !is.null(coerce.with))
+                             coerce_with <- coerce.with
+                           callSuper(...)
+                         }
+                       )
 
                        )
 
