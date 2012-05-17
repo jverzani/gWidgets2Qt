@@ -58,7 +58,7 @@ GText <- setRefClass("GText",
                        initialize=function(toolkit=NULL,
                          text = NULL, width = NULL, height = 300,
                          font.attr = NULL, wrap = TRUE,
-                         handler=NULL, action=NULL, container=NULL, ...) {
+                         handler=NULL, action=NULL, container=NULL, ..., fill) {
 
                          widget <<- GQTextEdit()
                          widget$setObj(.self)
@@ -72,7 +72,8 @@ GText <- setRefClass("GText",
                          widget$textCursor()$clearSelection()    
                          set_font(font.attr) # buffer font
                          
-                         add_to_parent(container, .self, ...)
+                         add_to_parent(container, .self, ...,
+                                       fill=ifelse(missing(fill),TRUE, fill))
                          
                          handler_id <<- add_handler_changed(handler, action)
                          
@@ -169,6 +170,7 @@ GText <- setRefClass("GText",
                            widget$setTextCursor(tc)
                          }
                        },
+                       set_tooltip=function(value, ...) {},
                        get_editable=function(...) !widget$isReadOnly(),
                        set_editable=function(value, ...) widget$setReadOnly(!value),
                        set_word_wrap=function(value, ...) {
