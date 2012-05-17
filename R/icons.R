@@ -11,7 +11,7 @@ NULL
 ##' @method .addStockIcons guiWidgetsToolkitQt
 ##' @S3method .addStockIcons guiWidgetsToolkitQt
 .addStockIcons.guiWidgetsToolkitQt <- function(toolkit, iconNames, iconFiles,... ) {
-  .GWidgetsQtIcons$add_qt_stock_icons(iconNames, iconFiles)
+  .GWidgetsQtIcons$add_to_qt_stock_icons(iconNames, iconFiles)
 }
 
 ##' Returns list of icons. Names are stock ids; value is related to an icon (an icon or name...)

@@ -2,7 +2,7 @@ drag-and-drop
 popup menus
 DONE font<- (use qfont)
 dispose(gwindow()) and is_extant (no ~QWindow, then still extant.
-gtable first column is too big
+gtable first column is too big XXX
 
 
 ## General

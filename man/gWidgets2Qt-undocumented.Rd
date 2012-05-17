@@ -393,7 +393,9 @@
   \item{by}{step size if not specified by \code{from}}
 
   \item{markup}{logical. If toolkit supports markup, this
-  indicates it will be used}
+  indicates it will be used. It is suggested that the
+  \code{font<-} method be used, though for
+  \pkg{gWidgets2Qt} \code{markup} is more convenient.}
 
   \item{font.attr}{font attributes for text buffer. One can
   also specify font attributes for insertion. The font
