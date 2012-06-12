@@ -2,7 +2,7 @@
 \alias{.ggroup.guiWidgetsToolkitQt}
 \title{toolkit constructor for ggroup}
 \usage{
-  \method{.ggroup}{guiWidgetsToolkitQt} (toolkit,
+  \method{.ggroup}{guiWidgetsToolkitQt}(toolkit,
     horizontal = TRUE, spacing = 5,
     use.scrollwindow = FALSE, container = NULL, ...)
 }
