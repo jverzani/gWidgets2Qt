@@ -1,7 +1,7 @@
 Package: gWidgets2Qt
 Type: Package
 Title: Port of the gWidget2 API to the qtbase package
-Version: 1.0
+Version: 1.0-1
 Author: John Verzani
 Depends:
     methods,
