@@ -63,3 +63,4 @@ Collate:
     'ggroup.R'
     'gframe.R'
     'gexpandgroup.R'
+    'gprogressbar.R'

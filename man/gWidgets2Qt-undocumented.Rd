@@ -28,6 +28,7 @@
 \alias{.gmessage.guiWidgetsToolkitQt}
 \alias{.gnotebook.guiWidgetsToolkitQt}
 \alias{.gpanedgroup.guiWidgetsToolkitQt}
+\alias{.gprogressbar.guiWidgetsToolkitQt}
 \alias{.gradio.guiWidgetsToolkitQt}
 \alias{.gseparator.guiWidgetsToolkitQt}
 \alias{.gslider.guiWidgetsToolkitQt}
@@ -218,6 +219,9 @@
   \method{.gexpandgroup}{guiWidgetsToolkitQt}(toolkit,
     text, markup, horizontal = TRUE, handler = NULL,
     action = NULL, container = NULL, ...)
+
+  \method{.gprogressbar}{guiWidgetsToolkitQt}(toolkit,
+    value, container, ...)
 }
 \arguments{
   \item{name}{name of icon}
@@ -540,9 +544,14 @@
   gframe constructor
 
   toolkit constructor
+
+  Toolkit constructor
 }
 \seealso{
   The documentation for this is found at
   \code{\link{gbutton}}.
+
+  The documentation for this is found at
+  \code{\link{gprogressbar}}.
 }
 
