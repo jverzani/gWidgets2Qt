@@ -7,7 +7,7 @@ GWidget <- setRefClass("GWidget",
                        methods=list(
                          initialize=function(..., coerce.with=NULL) {
                            if(is.null(coerce_with) && !is.null(coerce.with))
-                             coerce_with <- coerce.with
+                             coerce_with <<- coerce.with
                            callSuper(...)
                          }
                        )
