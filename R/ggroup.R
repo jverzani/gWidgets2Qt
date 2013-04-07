@@ -168,7 +168,9 @@ GGroup <- setRefClass("GGroup",
                           
 
                           horizontal <<- horizontal
-                          if(use.scrollwindow) {
+                          use.scrollwindow  <- as.character(use.scrollwindow)
+                          
+                          if(use.scrollwindow != "FALSE") {
                             block <<- make_scroll_widget(horizontal)
                           } else {
                             make_widget(horizontal)

@@ -49,10 +49,13 @@ GPanedGroup <- setRefClass("GPanedGroup",
                               }, 
                               set_value = function(value, ...) {
                                 "Set sash position"
-
-                                total <- sum(widget$sizes())
-                                left <- floor(total*value)
-                                right <- total - left
+                                szs <- widget$sizes()
+                                if(is.integer(value)) {
+                                  left <- value
+                                } else {
+                                  left <- floor(ifelse(horizontal, szs[2], szs[1]) * value)
+                                }
+                                right <- ifelse(horizontal, szs[2], szs[1]) - left 
                                 widget$setSizes(as.integer(c(left, right)))
                               },
                               get_items = function(i, j, ..., drop=TRUE) {

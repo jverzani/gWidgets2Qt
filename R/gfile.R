@@ -9,9 +9,10 @@ NULL
 ##' @method .gfile guiWidgetsToolkitQt
 ##' @S3method .gfile guiWidgetsToolkitQt
 .gfile.guiWidgetsToolkitQt <- function(toolkit,
-                                          text = "",
-                                          type = c("open","save","selectdir"),
-                                          initial.filename = NULL,
+                                       text = "",
+                                       type = c("open","save","selectdir"),
+                                       initial.filename = NULL,
+                                       initial.dir = getwd(),
                                           filter =  list(
                                             "All files"=list(
                                               patterns=c("*")
@@ -69,7 +70,7 @@ NULL
     
     ## how to set Title
     fm$setNameFilter(theFilter)
-    fm$setDirectory(getwd())
+    fm$setDirectory(initial.dir)
     if(!is.null(initial.filename))
       fm$selectFile(basename(initial.filename))
     
@@ -112,6 +113,7 @@ NULL
                                                  text = "",
                                                  type = c("open","save","selectdir"),
                                                  initial.filename = NULL,
+                                              initial.dir = getwd(),
                                                  filter = list(),
                                                  quote=TRUE,
                                                  handler=NULL,
@@ -119,7 +121,7 @@ NULL
                                                  container = NULL,
                                                  ... ) {
   GFileBrowse$new(toolkit,
-            text=text, type=type, initial.filename=initial.filename,
+            text=text, type=type, initial.filename=initial.filename, initial.dir = initial.dir,
             filter=filter, quote=quote, handler=handler, action=action, container=container, ...)
 }
 
@@ -133,6 +135,7 @@ GFileBrowse <- setRefClass("GFileBrowse",
                                 text = "",
                                 type = c("open", "save", "selectdir"),
                                 initial.filename = NULL,
+                                initial.dir = initial.dir,
                                 filter = list(),
                                 quote=TRUE,
                                 handler=NULL,
@@ -161,7 +164,8 @@ GFileBrowse <- setRefClass("GFileBrowse",
                                 qconnect(btn, "clicked", function() {
                                   ## quick dispatch by calling within toolkit
                                   ret <- .gfile.guiWidgetsToolkitQt(toolkit=toolkit, text=text, type=type,
-                                                                    initial.filename=initial.filename,filter=filter)
+                                                                    initial.filename=initial.filename, initial.dir=initial.dir,
+                                                                    filter=filter)
 
                                   if(length(ret))
                                     set_value(ret[1])

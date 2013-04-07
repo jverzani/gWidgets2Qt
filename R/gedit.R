@@ -246,8 +246,14 @@ GEdit <- setRefClass("GEdit",
                               add_handler_blur=function(handler, action, ...) {
                                 add_handler("focusOutEvent", handler, action, ...)
                               },
-                             
 
+                              ##
+                              set_icon = function(stock, where="start") {
+                                ## imlement me...
+                              },
+                              set_icon_handler = function(handler, where="start") {
+                                ## set handler for icon
+                              },
                               ## Validation methods
                               ## This is Qt Specific
                               set_validator = function(FUN) {
