@@ -142,6 +142,11 @@ GWindow <- setRefClass("GWindow",
                                 ## would like to do ~QWindow to destroy, but that
                                 ## proves unstable.
                               },
+                              set_icon=function(stock) {
+                                icon <- getStockIconByName(stock)
+                                if(!is.null(icon))
+                                  widget$setWindowIcon(as_qicon(icon))
+                              },
                               ##
                               ## add methods
                               add_child=function(child, ...) {
